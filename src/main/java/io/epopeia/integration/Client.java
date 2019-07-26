@@ -1,9 +1,11 @@
 package io.epopeia.integration;
 
 import java.util.Arrays;
-import org.apache.commons.codec.binary.Hex;
+
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISOUtil;
+import org.jpos.iso.header.BASE1Header;
 import org.jpos.iso.packager.Base1Packager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -69,20 +71,24 @@ public class Client {
 
 	@ServiceActivator(inputChannel = fromServer)
 	public void handleMessageFromServer(Message<byte[]> message) throws ISOException {
+		System.out.println("--------------------------------------------------------------------------");
 		message.getHeaders().forEach((k, v) -> System.out.printf("%s: %s\n", k, v));
-		System.out.println("---------------------------------------");
 		final byte[] payloadRaw = message.getPayload();
-		System.out.println("Received from server: " + Hex.encodeHexString(payloadRaw));
-		final int headerLength = payloadRaw[0];
-		final byte[] header = Arrays.copyOfRange(payloadRaw, 0, headerLength);
-		System.out.println("Header of message: " + Hex.encodeHexString(header));
-		final byte[] iso8583msg = Arrays.copyOfRange(payloadRaw, headerLength, payloadRaw.length);
-		System.out.println("Iso8583 message: " + Hex.encodeHexString(iso8583msg));
+		System.out.println("Received from server: " + ISOUtil.hexString(payloadRaw));
 
-		ISOMsg m = new ISOMsg();
+		final byte[] header = Arrays.copyOfRange(payloadRaw, 0, BASE1Header.LENGTH);
+		final byte[] iso8583 = Arrays.copyOfRange(payloadRaw, BASE1Header.LENGTH, payloadRaw.length);
+
+		// create a message container and read message
+		final ISOMsg m = new ISOMsg();
 		m.setPackager(new Base1Packager());
-		m.unpack(iso8583msg);
+		m.unpack(iso8583);
 
+		// create a header container and read the header
+		final BASE1Header h = new BASE1Header(header);
+
+		// print header and message
+		System.out.println(h.formatHeader());
 		m.dump(System.out, "\t");
 	}
 }
