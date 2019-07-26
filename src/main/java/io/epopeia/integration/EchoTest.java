@@ -13,6 +13,8 @@ import org.springframework.integration.ip.tcp.TcpSendingMessageHandler;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 
 @Service
 @Profile("client")
@@ -25,7 +27,7 @@ public class EchoTest {
 	private TcpSendingMessageHandler sender;
 
 	@Scheduled(fixedRate = 5000)
-	public void sendEchoTest() throws ISOException {
+	public void sendEchoTest() throws ISOException, DecoderException {
 
 		// reset stan
 		if (++ stan > 999999) {
@@ -39,6 +41,12 @@ public class EchoTest {
 		m.set(70, "301");
 		m.setPackager(new Base1Packager());
 
-		sender.handleMessageInternal(new GenericMessage<byte[]>(m.pack()));
+		final byte[] header = Hex.decodeHex("16010200440000000000000000000000000000000000".toCharArray());
+		byte[] isomsg = m.pack();
+		byte[] fullmsg = new byte[header.length + isomsg.length];
+		System.arraycopy(header, 0, fullmsg, 0, header.length);
+		System.arraycopy(isomsg, 0, fullmsg, header.length, isomsg.length);
+
+		sender.handleMessageInternal(new GenericMessage<byte[]>(fullmsg));
 	}
 }
