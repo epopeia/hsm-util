@@ -1,6 +1,6 @@
 # iso8583-client-server
 
-java -jar <jar file in target folder>
+java -jar ./target/iso8583-client-server-0.0.1-SNAPSHOT.jar
 
 -Dspring.profiles.active=[client,server]
 
