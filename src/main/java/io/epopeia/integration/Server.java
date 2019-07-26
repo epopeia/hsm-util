@@ -87,7 +87,7 @@ public class Server {
 		m.setResponseMTI();
 		m.set(39, "00");
 
-		final byte[] headerResp = Hex.decodeHex("16010200440000000000000000000000000000000000".toCharArray());
+		final byte[] headerResp = Hex.decodeHex("16010200460000000000000000000000000000000000".toCharArray());
 		byte[] isomsg = m.pack();
 		byte[] fullmsg = new byte[headerResp.length + isomsg.length];
 		System.arraycopy(headerResp, 0, fullmsg, 0, headerResp.length);
