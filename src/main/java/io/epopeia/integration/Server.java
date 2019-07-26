@@ -17,6 +17,7 @@ import org.springframework.integration.ip.tcp.connection.TcpNetServerConnectionF
 import org.springframework.integration.ip.tcp.serializer.ByteArrayLengthHeaderSerializer;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
+import org.apache.commons.codec.DecoderException;
 
 @Profile("server")
 @Configuration
