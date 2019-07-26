@@ -17,6 +17,7 @@ import org.springframework.integration.ip.tcp.connection.TcpNetServerConnectionF
 import org.springframework.integration.ip.tcp.serializer.ByteArrayLengthHeaderSerializer;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
+import org.apache.commons.codec.DecoderException;
 
 @Profile("server")
 @Configuration
@@ -66,7 +67,7 @@ public class Server {
 	}
 
 	@ServiceActivator(inputChannel = fromClient, outputChannel = toClient)
-	public Message<byte[]> handleMessageFromClient(Message<byte[]> message) throws ISOException {
+	public Message<byte[]> handleMessageFromClient(Message<byte[]> message) throws ISOException, DecoderException {
 		message.getHeaders().forEach((k, v) -> System.out.printf("%s: %s\n", k, v));
 		System.out.println("---------------------------------------");
 		final byte[] payloadRaw = message.getPayload();
@@ -86,6 +87,12 @@ public class Server {
 		m.setResponseMTI();
 		m.set(39, "00");
 
-		return new GenericMessage<byte[]>(m.pack());
+		final byte[] headerResp = Hex.decodeHex("16010200440000000000000000000000000000000000".toCharArray());
+		byte[] isomsg = m.pack();
+		byte[] fullmsg = new byte[headerResp.length + isomsg.length];
+		System.arraycopy(headerResp, 0, fullmsg, 0, headerResp.length);
+		System.arraycopy(isomsg, 0, fullmsg, headerResp.length, isomsg.length);
+
+		return new GenericMessage<byte[]>(fullmsg);
 	}
 }
