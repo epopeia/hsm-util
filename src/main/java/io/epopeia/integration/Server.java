@@ -1,10 +1,12 @@
 package io.epopeia.integration;
 
 import java.util.Arrays;
+
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISOUtil;
+import org.jpos.iso.header.BASE1Header;
 import org.jpos.iso.packager.Base1Packager;
-import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +19,6 @@ import org.springframework.integration.ip.tcp.connection.TcpNetServerConnectionF
 import org.springframework.integration.ip.tcp.serializer.ByteArrayLengthHeaderSerializer;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
-import org.apache.commons.codec.DecoderException;
 
 @Profile("server")
 @Configuration
@@ -67,32 +68,44 @@ public class Server {
 	}
 
 	@ServiceActivator(inputChannel = fromClient, outputChannel = toClient)
-	public Message<byte[]> handleMessageFromClient(Message<byte[]> message) throws ISOException, DecoderException {
+	public Message<byte[]> handleMessageFromClient(Message<byte[]> message) throws ISOException {
+		System.out.println("--------------------------------------------------------------------------");
 		message.getHeaders().forEach((k, v) -> System.out.printf("%s: %s\n", k, v));
-		System.out.println("---------------------------------------");
 		final byte[] payloadRaw = message.getPayload();
-		System.out.println("Received from client: " + Hex.encodeHexString(payloadRaw));
-		final int headerLength = payloadRaw[0];
-		final byte[] header = Arrays.copyOfRange(payloadRaw, 0, headerLength);
-		System.out.println("Header of message: " + Hex.encodeHexString(header));
-		final byte[] iso8583msg = Arrays.copyOfRange(payloadRaw, headerLength, payloadRaw.length);
-		System.out.println("Iso8583 message: " + Hex.encodeHexString(iso8583msg));
+		System.out.println("Received from client: " + ISOUtil.hexString(payloadRaw));
 
-		ISOMsg m = new ISOMsg();
+		final byte[] header = Arrays.copyOfRange(payloadRaw, 0, BASE1Header.LENGTH);
+		final byte[] iso8583 = Arrays.copyOfRange(payloadRaw, BASE1Header.LENGTH, payloadRaw.length);
+
+		// create a message container and read message
+		final ISOMsg m = new ISOMsg();
 		m.setPackager(new Base1Packager());
-		m.unpack(iso8583msg);
+		m.unpack(iso8583);
 
+		// create a header container and read the header
+		final BASE1Header h = new BASE1Header(header);
+
+		// print header and message
+		System.out.println(h.formatHeader());
 		m.dump(System.out, "\t");
 
+		// set response fields in the message
 		m.setResponseMTI();
 		m.set(39, "00");
 
-		final byte[] headerResp = Hex.decodeHex("16010200460000000000000000000000000000000000".toCharArray());
-		byte[] isomsg = m.pack();
-		byte[] fullmsg = new byte[headerResp.length + isomsg.length];
-		System.arraycopy(headerResp, 0, fullmsg, 0, headerResp.length);
-		System.arraycopy(isomsg, 0, fullmsg, headerResp.length, isomsg.length);
+		// get the message buffer
+		final byte[] mb = m.pack();
 
-		return new GenericMessage<byte[]>(fullmsg);
+		// get the header buffer
+		h.setLen(mb.length);
+		final byte[] hb = h.pack();
+
+		// concatenate the header and message in a buffer
+		final byte[] b = new byte[hb.length + mb.length];
+		System.arraycopy(hb, 0, b, 0, hb.length);
+		System.arraycopy(mb, 0, b, hb.length, mb.length);
+
+		// send the full buffer
+		return new GenericMessage<byte[]>(b);
 	}
 }
