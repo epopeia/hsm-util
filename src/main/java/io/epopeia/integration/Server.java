@@ -91,7 +91,7 @@ public class Server {
 
 		// set response fields in the message
 		final int MTI = Integer.parseInt(m.getMTI());
-		if (MTI == 100) {
+		if (MTI == 200) {
 			final ISOMsg mr = ISOMsg.class.cast(m.clone(new int[] { 2, 3, 4, 6, 7, 11, 19, 23, 25, 32, 37, 41, 42, 48,
 					49, 51, 54, 55, 63, 102, 103, 104, 117, 121 }));
 			mr.setResponseMTI();
