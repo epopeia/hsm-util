@@ -78,7 +78,7 @@ public class Server {
 		final byte[] iso8583 = Arrays.copyOfRange(payloadRaw, BASE1Header.LENGTH, payloadRaw.length);
 
 		// create a message container and read message
-		final ISOMsg m = new ISOMsg();
+		ISOMsg m = new ISOMsg();
 		m.setPackager(new Base1Packager());
 		m.unpack(iso8583);
 
@@ -90,8 +90,42 @@ public class Server {
 		m.dump(System.out, "\t");
 
 		// set response fields in the message
-		m.setResponseMTI();
-		m.set(39, "00");
+		final int MTI = Integer.parseInt(m.getMTI());
+		if (MTI == 100) {
+			final ISOMsg mr = ISOMsg.class.cast(m.clone(new int[] { 2, 3, 4, 6, 7, 11, 19, 23, 25, 32, 37, 41, 42, 48,
+					49, 51, 54, 55, 63, 102, 103, 104, 117, 121 }));
+			mr.setResponseMTI();
+
+			/*
+			mr.set("44.2", "Y");
+			mr.set("44.5", "");
+			mr.set("44.10", "");
+			mr.set("44.13", "");
+
+			mr.set("62.17", "");
+			mr.set("62.20", "");
+			mr.set("62.23", "");
+
+			mr.set(73, "");
+			mr.set(91, "");
+			mr.set(101, "");
+
+			mr.set("126.0", "");
+			mr.set("126.12", "");
+			mr.set("126.20", "");
+
+			mr.set(127, "");
+			*/
+
+			mr.set(38, "123456");
+			mr.set(39, "00");
+			
+			m = mr;
+			
+		} else {
+			m.setResponseMTI();
+			m.set(39, "00");
+		}
 
 		// get the message buffer
 		final byte[] mb = m.pack();
