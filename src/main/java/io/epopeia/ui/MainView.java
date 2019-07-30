@@ -7,72 +7,164 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 
 import io.epopeia.domain.Customers;
+import io.epopeia.domain.Issuers;
+import io.epopeia.domain.Networks;
+import io.epopeia.domain.Parameters;
 import io.epopeia.repository.CustomersRepo;
+import io.epopeia.repository.IssuersRepo;
+import io.epopeia.repository.NetworksRepo;
+import io.epopeia.repository.ParametersRepo;
 
 @Route
 public class MainView extends VerticalLayout {
 	private static final long serialVersionUID = 1L;
 
-	private final CustomersRepo repo;
+	IssuersRepo issuersRepo; 
+	IssuersEditor issuersEditor;
+	Grid<Issuers> issuersGrid = new Grid<>(Issuers.class);
+	Button issuersAddBt = new Button("New Issuer", VaadinIcon.PLUS.create());
 
-	private final CustomersEditor editor;
+	CustomersRepo customersRepo; 
+	CustomersEditor customersEditor;
+	Grid<Customers> customersGrid = new Grid<>(Customers.class);
+	Button customersAddBt = new Button("New Customer", VaadinIcon.PLUS.create());
 
-	final Grid<Customers> grid;
-
-	final TextField filter;
-
-	private final Button addNewBtn;
+	NetworksRepo networksRepo;
+	NetworksEditor networksEditor;
+	Grid<Networks> networksGrid = new Grid<>(Networks.class);
+	Button networksAddBt = new Button("New Network", VaadinIcon.PLUS.create());
+	
+	ParametersRepo parametersRepo; 
+	ParametersEditor parametersEditor;
+	Grid<Parameters> parametersGrid = new Grid<>(Parameters.class);
+	Button parametersAddBt = new Button("New Parameter", VaadinIcon.PLUS.create());
 
 	@Autowired
-	public MainView(CustomersRepo repo, CustomersEditor editor) {
-		this.repo = repo;
-		this.editor = editor;
-		this.grid = new Grid<>(Customers.class);
-		this.filter = new TextField();
-		this.addNewBtn = new Button("New customer", VaadinIcon.PLUS.create());
+	public MainView(
+			IssuersRepo issuersRepo, IssuersEditor issuersEditor,
+			CustomersRepo customersRepo, CustomersEditor customersEditor,
+			NetworksRepo networksRepo, NetworksEditor networksEditor,
+			ParametersRepo parametersRepo, ParametersEditor parametersEditor
+			) {
 
-		// build layout
-		HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
-		add(actions, grid, editor);
+		this.customersRepo = customersRepo;
+		this.customersEditor = customersEditor;
+		HorizontalLayout customerActions = new HorizontalLayout(customersAddBt);
 
-		grid.setHeight("300px");
-		grid.setColumns("id", "document", "customer_data_json");
-		grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
-
-		filter.setPlaceholder("Filter by last name");
-
-		// Hook logic to components
-
-		// Replace listing with filtered content when user changes filter
-		filter.setValueChangeMode(ValueChangeMode.EAGER);
-		filter.addValueChangeListener(e -> listCustomers(e.getValue()));
+		customersGrid.setHeight("100px");
+		customersGrid.setColumns("id", "document", "customer_data_json");
+		customersGrid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
 
 		// Connect selected Customer to editor or hide if none is selected
-		grid.asSingleSelect().addValueChangeListener(e -> {
-			this.editor.editCustomer(e.getValue());
+		customersGrid.asSingleSelect().addValueChangeListener(e -> {
+			this.customersEditor.edit(e.getValue());
 		});
 
 		// Instantiate and edit new Customer the new button is clicked
-		addNewBtn.addClickListener(e -> editor.editCustomer(new Customers()));
+		customersAddBt.addClickListener(e -> customersEditor.edit(new Customers()));
 
 		// Listen changes made by the editor, refresh data from backend
-		editor.setChangeHandler(() -> {
-			editor.setVisible(false);
-			listCustomers(filter.getValue());
+		customersEditor.setChangeHandler(() -> {
+			customersEditor.setVisible(false);
+			customersGrid.setItems(customersRepo.findAll());
 		});
 
 		// Initialize listing
-		listCustomers(null);
-	}
+		customersGrid.setItems(customersRepo.findAll());
+		
+		// ==================================================================
+		// ==================================================================
+		// ==================================================================
+		
+		this.networksRepo = networksRepo;
+		this.networksEditor = networksEditor;
+		HorizontalLayout networkActions = new HorizontalLayout(networksAddBt);
 
-	// tag::listCustomers[]
-	void listCustomers(String filterText) {
-		grid.setItems(repo.findAll());
+		networksGrid.setHeight("100px");
+		networksGrid.setColumns("id", "name");
+		networksGrid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
+
+		// Connect selected Customer to editor or hide if none is selected
+		networksGrid.asSingleSelect().addValueChangeListener(e -> {
+			this.networksEditor.edit(e.getValue());
+		});
+
+		// Instantiate and edit new Customer the new button is clicked
+		networksAddBt.addClickListener(e -> networksEditor.edit(new Networks()));
+
+		// Listen changes made by the editor, refresh data from backend
+		networksEditor.setChangeHandler(() -> {
+			networksEditor.setVisible(false);
+			networksGrid.setItems(networksRepo.findAll());
+		});
+
+		// ==================================================================
+		// ==================================================================
+		// ==================================================================
+		
+		this.issuersRepo = issuersRepo;
+		this.issuersEditor = issuersEditor;
+		HorizontalLayout issuerActions = new HorizontalLayout(issuersAddBt);
+
+		issuersGrid.setHeight("100px");
+		issuersGrid.setColumns("id", "name");
+		issuersGrid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
+
+		// Connect selected Customer to editor or hide if none is selected
+		issuersGrid.asSingleSelect().addValueChangeListener(e -> {
+			this.issuersEditor.edit(e.getValue());
+		});
+
+		// Instantiate and edit new Customer the new button is clicked
+		issuersAddBt.addClickListener(e -> issuersEditor.edit(new Issuers()));
+
+		// Listen changes made by the editor, refresh data from backend
+		issuersEditor.setChangeHandler(() -> {
+			issuersEditor.setVisible(false);
+			issuersGrid.setItems(issuersRepo.findAll());
+		});
+
+		// ==================================================================
+		// ==================================================================
+		// ==================================================================
+		
+		this.parametersRepo = parametersRepo;
+		this.parametersEditor = parametersEditor;
+		HorizontalLayout parameterActions = new HorizontalLayout(parametersAddBt);
+
+		parametersGrid.setHeight("100px");
+		parametersGrid.setColumns("id", "name", "description", "default_value");
+		parametersGrid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
+
+		// Connect selected Customer to editor or hide if none is selected
+		parametersGrid.asSingleSelect().addValueChangeListener(e -> {
+			this.parametersEditor.edit(e.getValue());
+		});
+
+		// Instantiate and edit new Customer the new button is clicked
+		parametersAddBt.addClickListener(e -> parametersEditor.edit(new Parameters()));
+
+		// Listen changes made by the editor, refresh data from backend
+		parametersEditor.setChangeHandler(() -> {
+			parametersEditor.setVisible(false);
+			parametersGrid.setItems(parametersRepo.findAll());
+		});
+		
+		// Insert grids
+		add(
+				issuerActions, issuersGrid, issuersEditor,
+				customerActions, customersGrid, customersEditor,
+				networkActions, networksGrid, networksEditor,
+				parameterActions, parametersGrid, parametersEditor
+			);
+
+		// Initialize listing
+		issuersGrid.setItems(issuersRepo.findAll());
+		customersGrid.setItems(customersRepo.findAll());
+		networksGrid.setItems(networksRepo.findAll());
+		parametersGrid.setItems(parametersRepo.findAll());
 	}
-	// end::listCustomers[]
 }
