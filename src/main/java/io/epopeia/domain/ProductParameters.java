@@ -16,6 +16,7 @@ import lombok.EqualsAndHashCode.Exclude;
 public @Data class ProductParameters {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@OneToOne
