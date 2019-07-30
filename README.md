@@ -11,3 +11,6 @@ java -jar ./target/iso8583-client-server-0.0.1-SNAPSHOT.jar
 -Diso8583.server.header.length=4
 
 -Diso8583.client.header.length=4
+
+# Link pro H2
+http://localhost:8080/h2
