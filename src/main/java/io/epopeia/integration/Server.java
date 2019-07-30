@@ -25,7 +25,7 @@ import org.springframework.messaging.support.GenericMessage;
 @Configuration
 public class Server {
 
-	@Value("${iso8583.server.port:8080}")
+	@Value("${iso8583.server.port:9090}")
 	private Integer port;
 
 	@Value("${iso8583.server.header.length:4}")
