@@ -21,19 +21,12 @@ import io.epopeia.repository.CustomersRepo;
 public class CustomersEditor extends VerticalLayout implements KeyNotifier {
 	private static final long serialVersionUID = 1L;
 
-	private final CustomersRepo repository;
+	private CustomersRepo repository;
+	private Customers entity;
 
-	/**
-	 * The currently edited customer
-	 */
-	private Customers customer;
-
-	/* Fields to edit properties in Customer entity */
 	TextField document = new TextField("Document");
 	TextField customer_data_json = new TextField("Customer data Json");
 
-	/* Action buttons */
-	// TODO why more code?
 	Button save = new Button("Save", VaadinIcon.CHECK.create());
 	Button cancel = new Button("Cancel");
 	Button delete = new Button("Delete", VaadinIcon.TRASH.create());
@@ -62,17 +55,17 @@ public class CustomersEditor extends VerticalLayout implements KeyNotifier {
 		// wire action buttons to save, delete and reset
 		save.addClickListener(e -> save());
 		delete.addClickListener(e -> delete());
-		cancel.addClickListener(e -> editCustomer(customer));
+		cancel.addClickListener(e -> edit(entity));
 		setVisible(false);
 	}
 
 	void delete() {
-		repository.delete(customer);
+		repository.delete(entity);
 		changeHandler.onChange();
 	}
 
 	void save() {
-		repository.save(customer);
+		repository.save(entity);
 		changeHandler.onChange();
 	}
 
@@ -80,7 +73,7 @@ public class CustomersEditor extends VerticalLayout implements KeyNotifier {
 		void onChange();
 	}
 
-	public final void editCustomer(Customers c) {
+	public final void edit(Customers c) {
 		if (c == null) {
 			setVisible(false);
 			return;
@@ -88,26 +81,25 @@ public class CustomersEditor extends VerticalLayout implements KeyNotifier {
 		final boolean persisted = c.getId() != null;
 		if (persisted) {
 			// Find fresh entity for editing
-			customer = repository.findById(c.getId()).get();
+			entity = repository.findById(c.getId()).get();
 		} else {
-			customer = c;
+			entity = c;
 		}
 		cancel.setVisible(persisted);
 
 		// Bind customer properties to similarly named fields
 		// Could also use annotation or "manual binding" or programmatically
 		// moving values from fields to entities before saving
-		binder.setBean(customer);
+		binder.setBean(entity);
 
 		setVisible(true);
 
-		// Focus first name initially
+		// Focus initially
 		document.focus();
 	}
 
 	public void setChangeHandler(ChangeHandler h) {
-		// ChangeHandler is notified when either save or delete
-		// is clicked
+		// ChangeHandler is notified when either save or delete is clicked
 		changeHandler = h;
 	}
 }
