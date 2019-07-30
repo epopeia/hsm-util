@@ -26,7 +26,7 @@ public class Client {
 	@Value("${iso8583.server.host:localhost}")
 	private String host;
 
-	@Value("${iso8583.server.port:8080}")
+	@Value("${iso8583.server.port:9090}")
 	private Integer port;
 
 	@Value("${iso8583.client.header.length:4}")
