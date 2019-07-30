@@ -126,8 +126,9 @@ public class Server {
 			m.set(39, "00");
 		}
 
-		// get the message buffer
-		final byte[] mb = m.pack();
+		// get the message buffe
+                m.dump(System.out, "\t");
+                final byte[] mb = m.pack();
 
 		// get the header buffer
 		h.setLen(mb.length);
