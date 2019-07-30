@@ -6,7 +6,7 @@ java -jar ./target/iso8583-client-server-0.0.1-SNAPSHOT.jar
 
 -Diso8583.server.host=localhost
 
--Diso8583.server.port=8080
+-Diso8583.server.port=9090
 
 -Diso8583.server.header.length=4
 
