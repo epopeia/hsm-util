@@ -14,6 +14,7 @@ import lombok.EqualsAndHashCode.Exclude;
 public @Data class Customers {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	private String document;
