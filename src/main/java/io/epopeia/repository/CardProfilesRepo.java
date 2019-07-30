@@ -6,6 +6,6 @@ import org.springframework.data.rest.core.annotation.RestResource;
 import io.epopeia.domain.CardProfiles;
 
 @RestResource(path = "cardProfiles", rel = "cardProfiles")
-public interface CardProfilesRepo extends CrudRepository<CardProfiles, Long> {
+public interface CardProfilesRepo extends JpaRepository<CardProfiles, Long> {
 
 }
