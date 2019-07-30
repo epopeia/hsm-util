@@ -1,7 +1,7 @@
 spring: 
   data:
     rest:
-      detection-strategy: annotated
+      basePath: /api
   h2:
     console:
       enabled: true
