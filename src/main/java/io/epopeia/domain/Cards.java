@@ -16,6 +16,7 @@ import lombok.EqualsAndHashCode.Exclude;
 public @Data class Cards {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	private String masked_card;
