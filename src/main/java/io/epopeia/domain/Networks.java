@@ -21,7 +21,7 @@ public @Data class Networks {
 	private Long id;
 
 	private String name;
-	private Long active;
+	private Boolean active;
 
 	@Exclude
 	@Temporal(TemporalType.TIMESTAMP)
