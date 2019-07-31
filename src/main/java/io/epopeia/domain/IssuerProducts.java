@@ -36,7 +36,7 @@ public @Data class IssuerProducts {
 	private Long card_length;
 	private String name;
 	private String network_ica_id;
-	private Long active;
+	private Boolean active;
 
 	@Exclude
 	@Temporal(TemporalType.TIMESTAMP)
