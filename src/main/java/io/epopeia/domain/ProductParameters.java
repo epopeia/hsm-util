@@ -31,7 +31,7 @@ public @Data class ProductParameters {
 	private Products products;
 
 	private String value;
-	private Long active;
+	private Boolean active;
 
 	@Exclude
 	@Temporal(TemporalType.TIMESTAMP)
