@@ -57,7 +57,7 @@
 			<dependency>
 				<groupId>com.vaadin</groupId>
 				<artifactId>vaadin-bom</artifactId>
-				<version>13.0.11</version>
+				<version>10.0.16</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
