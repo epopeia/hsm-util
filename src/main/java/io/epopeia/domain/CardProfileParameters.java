@@ -24,7 +24,7 @@ public @Data class CardProfileParameters {
 	private Long id;
 
 	private String value;
-	private Long active;
+	private Boolean active;
 
 	@OneToOne
 	@JoinColumn(name = "card_profiles_id", referencedColumnName = "id")
