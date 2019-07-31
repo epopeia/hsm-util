@@ -1,13 +1,14 @@
-package io.epopeia.ui;
+package io.epopeia.ui.form;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -18,15 +19,16 @@ import io.epopeia.repository.ParametersRepo;
 
 @SpringComponent
 @UIScope
-public class ParametersEditor extends VerticalLayout implements KeyNotifier {
+public class ParametersEditor extends FormLayout implements KeyNotifier {
 	private static final long serialVersionUID = 1L;
 
-	private ParametersRepo repository;
-	private Parameters entity;
+	ParametersRepo repository;
+	Parameters entity;
 
 	TextField name = new TextField("Name");
 	TextField description = new TextField("Description");
 	TextField default_value = new TextField("Default Value");
+	Checkbox active = new Checkbox("Active", true);
 
 	Button save = new Button("Save", VaadinIcon.CHECK.create());
 	Button cancel = new Button("Cancel");
@@ -40,13 +42,10 @@ public class ParametersEditor extends VerticalLayout implements KeyNotifier {
 	public ParametersEditor(ParametersRepo repository) {
 		this.repository = repository;
 
-		add(name, description, default_value, actions);
+		add(name, description, default_value, active, actions);
 
 		// bind using naming convention
 		binder.bindInstanceFields(this);
-
-		// Configure and style components
-		setSpacing(true);
 
 		save.getElement().getThemeList().add("primary");
 		delete.getElement().getThemeList().add("error");
@@ -74,17 +73,17 @@ public class ParametersEditor extends VerticalLayout implements KeyNotifier {
 		void onChange();
 	}
 
-	public final void edit(Parameters c) {
-		if (c == null) {
+	public final void edit(Parameters e) {
+		if (e == null) {
 			setVisible(false);
 			return;
 		}
-		final boolean persisted = c.getId() != null;
+		final boolean persisted = e.getId() != null;
 		if (persisted) {
 			// Find fresh entity for editing
-			entity = repository.findById(c.getId()).get();
+			entity = repository.findById(e.getId()).get();
 		} else {
-			entity = c;
+			entity = e;
 		}
 		cancel.setVisible(persisted);
 
