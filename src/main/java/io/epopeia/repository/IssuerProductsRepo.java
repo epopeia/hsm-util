@@ -1,11 +1,11 @@
 package io.epopeia.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.rest.core.annotation.RestResource;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import io.epopeia.domain.IssuerProducts;
 
-@RestResource(path = "issuerProducts", rel = "issuerProducts")
+@RepositoryRestResource(path = "issuerProducts", collectionResourceRel = "issuerProducts")
 public interface IssuerProductsRepo extends JpaRepository<IssuerProducts, Long> {
 
 }
