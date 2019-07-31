@@ -11,11 +11,11 @@ import io.epopeia.ui.layout.IssuersLayout;
 import io.epopeia.ui.layout.NetworksLayout;
 
 @Route
-public class MainAppView extends AppLayout {
+public class MainView extends AppLayout {
 	private static final long serialVersionUID = 1L;
 
 	@Autowired
-	public MainAppView(IssuersLayout issuers, NetworksLayout networks) {
+	public MainView(IssuersLayout issuers, NetworksLayout networks) {
 		super();
 		setBranding(new H3("Epopeia Authorizator"));
 
