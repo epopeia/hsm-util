@@ -23,7 +23,7 @@ public @Data class Products {
 	private Long id;
 
 	private String name;
-	private Long active;
+	private Boolean active;
 
 	@OneToOne
 	@JoinColumn(name = "network_id", referencedColumnName = "id")
