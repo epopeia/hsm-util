@@ -21,10 +21,9 @@ public class IssuersLayout extends VerticalLayout {
 
 	@Autowired
 	public IssuersLayout(IssuersRepo repo, IssuersEditor form) {
-		Grid<Issuers> grid = new Grid<>(Issuers.class);
+		Grid<Issuers> grid = new Grid<>(Issuers.class, false);
 		grid.setHeight("300px");
-		grid.setColumns("id", "name");
-		grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
+		grid.setColumns("name", "created_at", "updated_at");
 
 		// Connect selected Entity to editor or hide if none is selected
 		grid.asSingleSelect().addValueChangeListener(e -> {

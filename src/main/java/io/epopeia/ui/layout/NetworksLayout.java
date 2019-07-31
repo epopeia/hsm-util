@@ -21,10 +21,9 @@ public class NetworksLayout extends VerticalLayout {
 
 	@Autowired
 	public NetworksLayout(NetworksRepo repo, NetworksEditor form) {
-		Grid<Networks> grid = new Grid<>(Networks.class);
+		Grid<Networks> grid = new Grid<>(Networks.class, false);
 		grid.setHeight("300px");
-		grid.setColumns("id", "name");
-		grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
+		grid.setColumns("name", "created_at", "updated_at");
 
 		// Connect selected Entity to editor or hide if none is selected
 		grid.asSingleSelect().addValueChangeListener(e -> {

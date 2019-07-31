@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -29,9 +31,19 @@ public @Data class Products {
 
 	@Exclude
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date created_at = new Date();
+	private Date created_at;
 
 	@Exclude
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date updated_at = new Date();
+	private Date updated_at;
+
+	@PrePersist
+	public void prePersist() {
+		created_at = new Date();
+	}
+
+	@PreUpdate
+	public void preUpdate() {
+		updated_at = new Date();
+	}
 }
