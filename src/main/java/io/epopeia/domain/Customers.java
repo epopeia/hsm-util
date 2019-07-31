@@ -22,7 +22,7 @@ public @Data class Customers {
 
 	private String document;
 	private String customer_data_json;
-	private Long active;
+	private Boolean active;
 
 	@Exclude
 	@Temporal(TemporalType.TIMESTAMP)
