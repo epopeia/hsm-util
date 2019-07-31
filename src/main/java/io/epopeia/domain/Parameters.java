@@ -23,7 +23,7 @@ public @Data class Parameters {
 	private String name;
 	private String description;
 	private String default_value;
-	private Long active;
+	private Boolean active;
 
 	@Exclude
 	@Temporal(TemporalType.TIMESTAMP)
