@@ -1,13 +1,13 @@
-package io.epopeia.ui;
+package io.epopeia.ui.form;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -18,11 +18,11 @@ import io.epopeia.repository.IssuersRepo;
 
 @SpringComponent
 @UIScope
-public class IssuersEditor extends VerticalLayout implements KeyNotifier {
+public class IssuersEditor extends FormLayout implements KeyNotifier {
 	private static final long serialVersionUID = 1L;
 
-	private IssuersRepo repository;
-	private Issuers entity;
+	IssuersRepo repository;
+	Issuers entity;
 
 	TextField name = new TextField("Name");
 
@@ -42,9 +42,6 @@ public class IssuersEditor extends VerticalLayout implements KeyNotifier {
 
 		// bind using naming convention
 		binder.bindInstanceFields(this);
-
-		// Configure and style components
-		setSpacing(true);
 
 		save.getElement().getThemeList().add("primary");
 		delete.getElement().getThemeList().add("error");
@@ -72,17 +69,17 @@ public class IssuersEditor extends VerticalLayout implements KeyNotifier {
 		void onChange();
 	}
 
-	public final void edit(Issuers c) {
-		if (c == null) {
+	public final void edit(Issuers e) {
+		if (e == null) {
 			setVisible(false);
 			return;
 		}
-		final boolean persisted = c.getId() != null;
+		final boolean persisted = e.getId() != null;
 		if (persisted) {
 			// Find fresh entity for editing
-			entity = repository.findById(c.getId()).get();
+			entity = repository.findById(e.getId()).get();
 		} else {
-			entity = c;
+			entity = e;
 		}
 		cancel.setVisible(persisted);
 
