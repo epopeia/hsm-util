@@ -23,8 +23,8 @@ public @Data class Cards {
 
 	private String masked_card;
 	private String card;
-	private Long expiration_month;
-	private Long expiration_year;
+	private Double expiration_month;
+	private Double expiration_year;
 	private Boolean active;
 	private String hash;
 
