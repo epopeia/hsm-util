@@ -12,6 +12,7 @@ import io.epopeia.ui.layout.IssuerProductsLayout;
 import io.epopeia.ui.layout.IssuersLayout;
 import io.epopeia.ui.layout.NetworksLayout;
 import io.epopeia.ui.layout.ParametersLayout;
+import io.epopeia.ui.layout.ProductParametersLayout;
 import io.epopeia.ui.layout.ProductsLayout;
 
 @Route
@@ -20,7 +21,8 @@ public class MainView extends AppLayout {
 
 	@Autowired
 	public MainView(IssuersLayout issuers, NetworksLayout networks, ParametersLayout parameters,
-			CustomersLayout customers, ProductsLayout products, IssuerProductsLayout issuerProducts) {
+			CustomersLayout customers, ProductsLayout products, IssuerProductsLayout issuerProducts,
+			ProductParametersLayout productParameters) {
 		super();
 		setBranding(new H3("Epopeia Authorizator"));
 
@@ -30,6 +32,8 @@ public class MainView extends AppLayout {
 		AppLayoutMenuItem mIssuers = new AppLayoutMenuItem("Issuers", e -> setContent(issuers));
 		AppLayoutMenuItem mNetworks = new AppLayoutMenuItem("Networks", e -> setContent(networks));
 		AppLayoutMenuItem mIssuerProducts = new AppLayoutMenuItem("Issuer Products", e -> setContent(issuerProducts));
+		AppLayoutMenuItem mProductParameters = new AppLayoutMenuItem("Product Parameters",
+				e -> setContent(productParameters));
 
 		mProducts.addMenuItemClickListener(e -> products.refresh());
 		mCustomers.addMenuItemClickListener(e -> customers.refresh());
@@ -37,7 +41,9 @@ public class MainView extends AppLayout {
 		mIssuers.addMenuItemClickListener(e -> issuers.refresh());
 		mNetworks.addMenuItemClickListener(e -> networks.refresh());
 		mIssuerProducts.addMenuItemClickListener(e -> issuerProducts.refresh());
+		mProductParameters.addMenuItemClickListener(e -> productParameters.refresh());
 
-		createMenu().addMenuItems(mIssuers, mIssuerProducts, mProducts, mNetworks, mCustomers, mParameters);
+		createMenu().addMenuItems(mNetworks, mIssuers, mIssuerProducts, mProducts, mProductParameters, mParameters,
+				mCustomers);
 	}
 }
