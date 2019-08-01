@@ -7,6 +7,9 @@ import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.router.Route;
 
+import io.epopeia.ui.layout.CardProfileParametersLayout;
+import io.epopeia.ui.layout.CardProfilesLayout;
+import io.epopeia.ui.layout.CardsLayout;
 import io.epopeia.ui.layout.CustomersLayout;
 import io.epopeia.ui.layout.IssuerProductsLayout;
 import io.epopeia.ui.layout.IssuersLayout;
@@ -22,7 +25,8 @@ public class MainView extends AppLayout {
 	@Autowired
 	public MainView(IssuersLayout issuers, NetworksLayout networks, ParametersLayout parameters,
 			CustomersLayout customers, ProductsLayout products, IssuerProductsLayout issuerProducts,
-			ProductParametersLayout productParameters) {
+			ProductParametersLayout productParameters, CardProfilesLayout cardProfiles,
+			CardProfileParametersLayout cardProfileParameters, CardsLayout cards) {
 		super();
 		setBranding(new H3("Epopeia Authorizator"));
 
@@ -34,6 +38,10 @@ public class MainView extends AppLayout {
 		AppLayoutMenuItem mIssuerProducts = new AppLayoutMenuItem("Issuer Products", e -> setContent(issuerProducts));
 		AppLayoutMenuItem mProductParameters = new AppLayoutMenuItem("Product Parameters",
 				e -> setContent(productParameters));
+		AppLayoutMenuItem mCardProfiles = new AppLayoutMenuItem("Card Profiles", e -> setContent(cardProfiles));
+		AppLayoutMenuItem mCardProfileParameters = new AppLayoutMenuItem("Card Profile Parameters",
+				e -> setContent(cardProfileParameters));
+		AppLayoutMenuItem mCards = new AppLayoutMenuItem("Cards", e -> setContent(cards));
 
 		mProducts.addMenuItemClickListener(e -> products.refresh());
 		mCustomers.addMenuItemClickListener(e -> customers.refresh());
@@ -42,8 +50,11 @@ public class MainView extends AppLayout {
 		mNetworks.addMenuItemClickListener(e -> networks.refresh());
 		mIssuerProducts.addMenuItemClickListener(e -> issuerProducts.refresh());
 		mProductParameters.addMenuItemClickListener(e -> productParameters.refresh());
+		mCardProfiles.addMenuItemClickListener(e -> cardProfiles.refresh());
+		mCardProfileParameters.addMenuItemClickListener(e -> cardProfileParameters.refresh());
+		mCards.addMenuItemClickListener(e -> cards.refresh());
 
 		createMenu().addMenuItems(mNetworks, mIssuers, mIssuerProducts, mProducts, mProductParameters, mParameters,
-				mCustomers);
+				mCustomers, mCardProfiles, mCardProfileParameters, mCards);
 	}
 }
