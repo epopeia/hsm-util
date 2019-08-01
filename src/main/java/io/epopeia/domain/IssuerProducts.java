@@ -31,9 +31,9 @@ public @Data class IssuerProducts {
 	private Products products;
 
 	private String bin;
-	private Long range_start;
-	private Long range_end;
-	private Long card_length;
+	private Double range_start;
+	private Double range_end;
+	private Double card_length;
 	private String name;
 	private String network_ica_id;
 	private Boolean active;
