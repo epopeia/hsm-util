@@ -13,11 +13,13 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.integration.ip.tcp.TcpSendingMessageHandler;
 import org.springframework.messaging.support.GenericMessage;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Profile("echotest")
 @Service
+@EnableScheduling
 public class EchoTest {
 
 	private static int stan = 0;
