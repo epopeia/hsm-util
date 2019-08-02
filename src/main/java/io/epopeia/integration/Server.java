@@ -1,7 +1,11 @@
 package io.epopeia.integration;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.Arrays;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jpos.iso.IFE_AMOUNT;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
@@ -22,6 +26,8 @@ import org.springframework.messaging.support.GenericMessage;
 
 @Configuration
 public class Server {
+
+	private static final Logger LOGGER = LogManager.getLogger(Server.class);
 
 	@Value("${iso8583.server.port:9090}")
 	private Integer port;
@@ -68,23 +74,24 @@ public class Server {
 
 	@ServiceActivator(inputChannel = serverInChannel, outputChannel = serverOutChannel)
 	public Message<byte[]> handleMessageFromClient(Message<byte[]> message) throws ISOException {
-		System.out.println("--------------------------------------------------------------------------");
-		message.getHeaders().forEach((k, v) -> System.out.printf("%s: %s\n", k, v));
+		LOGGER.info("-------------------------------------------------------------------");
+		message.getHeaders().forEach((k, v) -> LOGGER.info(String.format("%s: %s", k, v)));
 		final byte[] payloadRaw = message.getPayload();
-		System.out.println("Received from client: " + ISOUtil.hexString(payloadRaw));
+		LOGGER.info("Received from client: " + ISOUtil.hexString(payloadRaw));
 
 		final byte[] header = Arrays.copyOfRange(payloadRaw, 0, BASE1Header.LENGTH);
 		final byte[] iso8583 = Arrays.copyOfRange(payloadRaw, BASE1Header.LENGTH, payloadRaw.length);
 
 		// create a header container and read the header
 		final BASE1Header h = new BASE1Header(header);
-		System.out.println(h.formatHeader());
+		LOGGER.info(h.formatHeader());
 
 		// create a message container and read message
 		ISOMsg m = new ISOMsg();
+		m.setDirection(ISOMsg.INCOMING);
 		m.setPackager(new CustomBase1Packager());
 		m.unpack(iso8583);
-		m.dump(System.out, "\t");
+		jposDumpToLog4j(m);
 
 		// set response fields in the message
 		final int MTI = Integer.parseInt(m.getMTI());
@@ -103,8 +110,11 @@ public class Server {
 			m.set(39, "00");
 		}
 
-		// get the message buffe
-		m.dump(System.out, "\t");
+		m.setDirection(ISOMsg.OUTGOING);
+		// logs the response message before pack
+		jposDumpToLog4j(m);
+
+		// get the message buffer
 		final byte[] mb = m.pack();
 
 		// get the header buffer
@@ -120,7 +130,15 @@ public class Server {
 		return new GenericMessage<byte[]>(b);
 	}
 
-	static class CustomBase1Packager extends Base1Packager {
+	private static void jposDumpToLog4j(ISOMsg m) {
+		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		final PrintStream ps = new PrintStream(baos);
+		ps.println();
+		m.dump(ps, "");
+		LOGGER.info(baos.toString());
+	}
+
+	private static class CustomBase1Packager extends Base1Packager {
 		public CustomBase1Packager() {
 			super();
 			base1Fld[28] = new IFE_AMOUNT(9, "AMOUNT, TRANSACTION FEE");

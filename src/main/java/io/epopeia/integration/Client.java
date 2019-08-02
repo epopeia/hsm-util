@@ -1,7 +1,11 @@
 package io.epopeia.integration;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.Arrays;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOUtil;
@@ -10,6 +14,7 @@ import org.jpos.iso.packager.Base1Packager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.ip.tcp.TcpReceivingChannelAdapter;
 import org.springframework.integration.ip.tcp.TcpSendingMessageHandler;
@@ -18,8 +23,11 @@ import org.springframework.integration.ip.tcp.connection.TcpNetClientConnectionF
 import org.springframework.integration.ip.tcp.serializer.ByteArrayLengthHeaderSerializer;
 import org.springframework.messaging.Message;
 
+@Profile("client")
 @Configuration
 public class Client {
+
+	private static final Logger LOGGER = LogManager.getLogger(Client.class);
 
 	@Value("${iso8583.server.host:localhost}")
 	private String host;
@@ -69,16 +77,17 @@ public class Client {
 
 	@ServiceActivator(inputChannel = clientInChannel)
 	public void handleMessageFromServer(Message<byte[]> message) throws ISOException {
-		System.out.println("--------------------------------------------------------------------------");
-		message.getHeaders().forEach((k, v) -> System.out.printf("%s: %s\n", k, v));
+		LOGGER.info("-------------------------------------------------------------------");
+		message.getHeaders().forEach((k, v) -> LOGGER.info(String.format("%s: %s", k, v)));
 		final byte[] payloadRaw = message.getPayload();
-		System.out.println("Received from server: " + ISOUtil.hexString(payloadRaw));
+		LOGGER.info("Received from server: " + ISOUtil.hexString(payloadRaw));
 
 		final byte[] header = Arrays.copyOfRange(payloadRaw, 0, BASE1Header.LENGTH);
 		final byte[] iso8583 = Arrays.copyOfRange(payloadRaw, BASE1Header.LENGTH, payloadRaw.length);
 
 		// create a message container and read message
 		final ISOMsg m = new ISOMsg();
+		m.setDirection(ISOMsg.INCOMING);
 		m.setPackager(new Base1Packager());
 		m.unpack(iso8583);
 
@@ -86,7 +95,15 @@ public class Client {
 		final BASE1Header h = new BASE1Header(header);
 
 		// print header and message
-		System.out.println(h.formatHeader());
-		m.dump(System.out, "\t");
+		LOGGER.info(h.formatHeader());
+		jposDumpToLog4j(m);
+	}
+
+	private static void jposDumpToLog4j(ISOMsg m) {
+		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		final PrintStream ps = new PrintStream(baos);
+		ps.println();
+		m.dump(ps, "");
+		LOGGER.info(baos.toString());
 	}
 }
