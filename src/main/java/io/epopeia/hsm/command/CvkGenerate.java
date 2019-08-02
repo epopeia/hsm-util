@@ -1,5 +1,7 @@
 package io.epopeia.hsm.command;
 
+import io.epopeia.hsm.HSMResponse;
+
 class CvkGenerate extends Command 
 {
 	
@@ -16,11 +18,12 @@ class CvkGenerate extends Command
 		this.serviceCode = serviceCode;
 	}
 
-	public String execute(String[] args) throws Exception {
+	public HSMResponse execute(String[] args) throws Exception {
 		
+		String header = "0000";
 		
 		StringBuffer sb = new StringBuffer();
-		sb.append("0000"); //0000 header
+		sb.append(header); //0000 header
 		sb.append("CK"); // command to generate
 		sb.append(this.cvkKey);
 		sb.append(this.pan); 
@@ -29,12 +32,8 @@ class CvkGenerate extends Command
 		sb.append(serviceCode);
 		
 		
-		String cmd = super.runCmd(sb.toString());
+		return new CvkHSMResponse( super.runCmd(sb.toString()), header);
 		
-		
-		
-		
-		return cmd;
 	}
 
 }

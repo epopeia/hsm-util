@@ -1,10 +1,11 @@
 package io.epopeia.hsm.command;
 
 import io.epopeia.hsm.HSMIO;
+import io.epopeia.hsm.HSMResponse;
 
 abstract class Command
 {
-  public abstract String execute(String[] paramArrayOfString)
+  public abstract HSMResponse execute(String[] paramArrayOfString)
     throws Exception;
   
   protected String runCmd(String cmd) throws Exception {

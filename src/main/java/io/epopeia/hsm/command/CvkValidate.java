@@ -1,5 +1,7 @@
 package io.epopeia.hsm.command;
 
+import io.epopeia.hsm.HSMResponse;
+
 class CvkValidate extends Command 
 {
 	
@@ -9,6 +11,9 @@ class CvkValidate extends Command
 	private String serviceCode;
 	private String cvv;
 	
+	// CVV1 service code vem da trilha
+	// CVV2 service code é 000
+	// iCVV service code é 999
 	public CvkValidate(String pan, String cvv, int expirationYear, int expirationMonth, String serviceCode, String cvkKey)
 	{
 		this.pan = pan;
@@ -18,11 +23,11 @@ class CvkValidate extends Command
 		this.serviceCode = serviceCode;
 	}
 
-	public String execute(String[] args) throws Exception {
+	public HSMResponse execute(String[] args) throws Exception {
 		
-		
+		String header = "0000";
 		StringBuffer sb = new StringBuffer();
-		sb.append("0000"); //0000 header
+		sb.append(header); //0000 header
 		sb.append("CY"); // command to generate
 		sb.append(this.cvkKey);
 		sb.append(this.cvv);
@@ -32,12 +37,7 @@ class CvkValidate extends Command
 		sb.append(serviceCode);
 		
 		
-		String cmd = super.runCmd(sb.toString());
-		
-		
-		
-		
-		return cmd;
+		return new HSMResponse( super.runCmd(sb.toString()), header, "CZ");
 	}
 
 }

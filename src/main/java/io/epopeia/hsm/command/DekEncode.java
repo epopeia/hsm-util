@@ -1,5 +1,7 @@
 package io.epopeia.hsm.command;
 
+import io.epopeia.hsm.HSMResponse;
+
 class DekEncode extends Command 
 {
 	
@@ -12,7 +14,7 @@ class DekEncode extends Command
 		this.dekKey = dekKey;
 	}
 
-	public String execute(String[] args) throws Exception {
+	public HSMResponse execute(String[] args) throws Exception {
 		
 		
 		//00 ECB crypto
@@ -21,8 +23,10 @@ class DekEncode extends Command
 		//00B key type
 		//
 		
+		String header = "0000"; 
+		
 		StringBuffer sb = new StringBuffer();
-		sb.append("0000"); //0000 header
+		sb.append(header); //0000 header
 		sb.append("M0"); // command to encrypt
 		sb.append("00"); // 00 ECB crypto
 		sb.append("2"); //2 text encoded
@@ -32,13 +36,9 @@ class DekEncode extends Command
 		sb.append( String.format("%4d", Integer.toHexString( data.length() ))  ); //max 32000 bytes, length in hex
 		sb.append( data ); // multiples of 16
 		
-		String cmd = super.runCmd(sb.toString());
 		
+		return new HSMResponse( super.runCmd(sb.toString()), header, "M1");
 		
-		
-		
-		
-		return cmd;
 	}
 
 }

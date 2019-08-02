@@ -1,5 +1,7 @@
 package io.epopeia.hsm.command;
 
+import io.epopeia.hsm.HSMResponse;
+
 class PinGenerate extends Command 
 {
 	
@@ -8,13 +10,20 @@ class PinGenerate extends Command
 	public PinGenerate(String pan)
 	{
 		// 12 digits from the right to the left
-		this.pan = pan.substring( pan.length() - 12, pan.length() -1);	
+		this.pan = pan.substring( pan.length() - 13, pan.length() -1);	
 	}
 
-	public String execute(String[] args) throws Exception {
+	public HSMResponse execute(String[] args) throws Exception {
 		
-		String cmd = super.runCmd("0000JA" + this.pan);
-		return cmd;
+		String header = "0000";
+		return new HSMResponse( super.runCmd(super.runCmd(header+"JA" + this.pan)), header, "JB");
+		
+		// COMANDO JE para geerar o pin e traduzir pra pinhost (lmk)
+		
+		// ver comandos para geracaoo do pin
+		// qc (reference number e pin)
+		// qa
+		
 	}
 
 }
