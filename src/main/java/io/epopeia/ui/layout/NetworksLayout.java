@@ -12,18 +12,22 @@ import com.vaadin.flow.spring.annotation.UIScope;
 
 import io.epopeia.domain.Networks;
 import io.epopeia.repository.NetworksRepo;
-import io.epopeia.ui.NetworksEditor;
+import io.epopeia.ui.form.NetworksEditor;
 
 @SpringComponent
 @UIScope
 public class NetworksLayout extends VerticalLayout {
 	private static final long serialVersionUID = 1L;
 
+	Grid<Networks> grid = new Grid<>(Networks.class, false);
+	NetworksRepo repo;
+
 	@Autowired
 	public NetworksLayout(NetworksRepo repo, NetworksEditor form) {
-		Grid<Networks> grid = new Grid<>(Networks.class, false);
+		this.repo = repo;
+
 		grid.setHeight("300px");
-		grid.setColumns("name", "created_at", "updated_at");
+		grid.setColumns("name", "active", "created_at", "updated_at");
 
 		// Connect selected Entity to editor or hide if none is selected
 		grid.asSingleSelect().addValueChangeListener(e -> {
@@ -33,14 +37,19 @@ public class NetworksLayout extends VerticalLayout {
 		// Listen changes made by the editor, refresh data from back-end
 		form.setChangeHandler(() -> {
 			form.setVisible(false);
-			grid.setItems(repo.findAll());
+			refresh();
 		});
 
 		Button addBt = new Button(VaadinIcon.PLUS.create(), e -> form.edit(new Networks()));
+		addBt.setText("New " + Networks.class.getSimpleName());
 		HorizontalLayout actions = new HorizontalLayout(addBt);
 		add(actions, grid, form);
 
 		// Initialize listing
+		refresh();
+	}
+
+	public void refresh() {
 		grid.setItems(repo.findAll());
 	}
 }
