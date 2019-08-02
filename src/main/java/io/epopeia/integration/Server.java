@@ -138,7 +138,7 @@ public class Server {
 		LOGGER.info(baos.toString());
 	}
 
-	private static class CustomBase1Packager extends Base1Packager {
+	static class CustomBase1Packager extends Base1Packager {
 		public CustomBase1Packager() {
 			super();
 			base1Fld[28] = new IFE_AMOUNT(9, "AMOUNT, TRANSACTION FEE");
