@@ -16,3 +16,4 @@ java -jar ./target/iso8583-client-server-0.0.1-SNAPSHOT.jar
 http://localhost:8080/h2
 
 http://localhost:8080/api
+
