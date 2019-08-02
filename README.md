@@ -2,7 +2,7 @@
 
 java -jar ./target/iso8583-client-server-0.0.1-SNAPSHOT.jar
 
--Dspring.profiles.active=[client,server]
+-Dspring.profiles.active=[client,echotest]
 
 -Diso8583.server.host=localhost
 
