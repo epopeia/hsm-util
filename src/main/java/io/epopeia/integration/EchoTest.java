@@ -8,21 +8,21 @@ import org.jpos.iso.ISOMsg;
 import org.jpos.iso.header.BASE1Header;
 import org.jpos.iso.packager.Base1Packager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Profile;
 import org.springframework.integration.ip.tcp.TcpSendingMessageHandler;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
-@Profile("client")
 public class EchoTest {
 
 	private static int stan = 0;
 
 	@Lazy
 	@Autowired
+	@Qualifier("clientOut")
 	private TcpSendingMessageHandler sender;
 
 	@Scheduled(fixedRate = 5000)

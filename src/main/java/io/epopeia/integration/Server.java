@@ -11,7 +11,6 @@ import org.jpos.iso.packager.Base1Packager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.ip.tcp.TcpReceivingChannelAdapter;
 import org.springframework.integration.ip.tcp.TcpSendingMessageHandler;
@@ -21,7 +20,6 @@ import org.springframework.integration.ip.tcp.serializer.ByteArrayLengthHeaderSe
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
 
-@Profile("server")
 @Configuration
 public class Server {
 
@@ -31,44 +29,44 @@ public class Server {
 	@Value("${iso8583.server.header.length:4}")
 	private int tcpHeaderLength;
 
-	private static final String fromClient = "fromClient";
-	private static final String toClient = "toClient";
+	private static final String serverInChannel = "serverInChannel";
+	private static final String serverOutChannel = "serverOutChannel";
 
 	@Bean
-	public ByteArrayLengthHeaderSerializer javaSerializer() {
+	public ByteArrayLengthHeaderSerializer serverSerializer() {
 		return new ByteArrayLengthHeaderSerializer(tcpHeaderLength);
 	}
 
 	@Bean
-	public ByteArrayLengthHeaderSerializer javaDeserializer() {
+	public ByteArrayLengthHeaderSerializer serverDeserializer() {
 		return new ByteArrayLengthHeaderSerializer(tcpHeaderLength);
 	}
 
 	@Bean
 	public AbstractServerConnectionFactory myServer() {
 		final TcpNetServerConnectionFactory server = new TcpNetServerConnectionFactory(this.port);
-		server.setSerializer(javaSerializer());
-		server.setDeserializer(javaDeserializer());
+		server.setSerializer(serverSerializer());
+		server.setDeserializer(serverDeserializer());
 		return server;
 	}
 
 	@Bean
-	@ServiceActivator(inputChannel = toClient)
-	public TcpSendingMessageHandler mySender() {
+	@ServiceActivator(inputChannel = serverOutChannel)
+	public TcpSendingMessageHandler serverOut() {
 		final TcpSendingMessageHandler sender = new TcpSendingMessageHandler();
 		sender.setConnectionFactory(myServer()); // share the same connections
 		return sender;
 	}
 
 	@Bean
-	public TcpReceivingChannelAdapter myReceiver() {
+	public TcpReceivingChannelAdapter serverIn() {
 		final TcpReceivingChannelAdapter receiver = new TcpReceivingChannelAdapter();
 		receiver.setConnectionFactory(myServer()); // share the same connections
-		receiver.setOutputChannelName(fromClient);
+		receiver.setOutputChannelName(serverInChannel);
 		return receiver;
 	}
 
-	@ServiceActivator(inputChannel = fromClient, outputChannel = toClient)
+	@ServiceActivator(inputChannel = serverInChannel, outputChannel = serverOutChannel)
 	public Message<byte[]> handleMessageFromClient(Message<byte[]> message) throws ISOException {
 		System.out.println("--------------------------------------------------------------------------");
 		message.getHeaders().forEach((k, v) -> System.out.printf("%s: %s\n", k, v));
@@ -95,40 +93,19 @@ public class Server {
 					49, 51, 54, 55, 63, 102, 103, 104, 117, 121 }));
 			mr.setMTI("0210");
 
-			/*
-			mr.set("44.2", "Y");
-			mr.set("44.5", "");
-			mr.set("44.10", "");
-			mr.set("44.13", "");
-
-			mr.set("62.17", "");
-			mr.set("62.20", "");
-			mr.set("62.23", "");
-
-			mr.set(73, "");
-			mr.set(91, "");
-			mr.set(101, "");
-
-			mr.set("126.0", "");
-			mr.set("126.12", "");
-			mr.set("126.20", "");
-
-			mr.set(127, "");
-			*/
-
 			mr.set(38, "123456");
 			mr.set(39, "00");
-			
+
 			m = mr;
-			
+
 		} else {
 			m.setResponseMTI();
 			m.set(39, "00");
 		}
 
 		// get the message buffe
-                m.dump(System.out, "\t");
-                final byte[] mb = m.pack();
+		m.dump(System.out, "\t");
+		final byte[] mb = m.pack();
 
 		// get the header buffer
 		h.setLen(mb.length);
@@ -142,11 +119,11 @@ public class Server {
 		// send the full buffer
 		return new GenericMessage<byte[]>(b);
 	}
-	
+
 	static class CustomBase1Packager extends Base1Packager {
 		public CustomBase1Packager() {
 			super();
-			base1Fld[28] = new IFE_AMOUNT  (  9, "AMOUNT, TRANSACTION FEE");
+			base1Fld[28] = new IFE_AMOUNT(9, "AMOUNT, TRANSACTION FEE");
 		}
 	}
 }
