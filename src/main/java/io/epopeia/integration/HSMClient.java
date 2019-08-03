@@ -3,6 +3,7 @@ package io.epopeia.integration;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,8 @@ import org.springframework.integration.ip.tcp.connection.AbstractClientConnectio
 import org.springframework.integration.ip.tcp.connection.TcpNetClientConnectionFactory;
 import org.springframework.integration.ip.tcp.serializer.ByteArrayLengthHeaderSerializer;
 import org.springframework.messaging.Message;
+
+import io.epopeia.service.HsmService;
 
 @Profile("hsm")
 @Configuration
@@ -29,6 +32,9 @@ public class HSMClient {
 
 	@Value("${iso8583.hsm.header.length:2}")
 	private int headerLength;
+
+	@Autowired
+	private HsmService hsmService;
 
 	private static final String hsmOutChannel = "hsmOutChannel";
 	private static final String hsmInChannel = "hsmInChannel";
@@ -72,6 +78,8 @@ public class HSMClient {
 		LOGGER.info("-------------------------------------------------------------------");
 		message.getHeaders().forEach((k, v) -> LOGGER.info(String.format("%s: %s", k, v)));
 		final byte[] payloadRaw = message.getPayload();
-		LOGGER.info("Received from hsm: " + Hex.encodeHexString(payloadRaw));
+		LOGGER.info("Received from HSM: " + Hex.encodeHexString(payloadRaw));
+
+		hsmService.handleResponseFromHsm(payloadRaw);
 	}
 }
