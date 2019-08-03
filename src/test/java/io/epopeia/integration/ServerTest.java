@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.test.context.SpringIntegrationTest;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -19,6 +20,7 @@ import io.epopeia.service.VisaAuthorizationService;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { Iso8583Server.class, VisaAuthorizationService.class })
 @SpringIntegrationTest(noAutoStartup = "*")
+@ActiveProfiles("server")
 public class ServerTest {
 
 	@Autowired

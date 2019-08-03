@@ -24,10 +24,10 @@ public class HSMClient {
 
 	private static final Logger LOGGER = LogManager.getLogger(HSMClient.class);
 
-	@Value("${iso8583.hsm.host}")
+	@Value("${iso8583.hsm.host:localhost}")
 	private String host;
 
-	@Value("${iso8583.hsm.port}")
+	@Value("${iso8583.hsm.port:7070}")
 	private Integer port;
 
 	@Value("${iso8583.hsm.header.length:2}")

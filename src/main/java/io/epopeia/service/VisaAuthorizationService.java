@@ -10,8 +10,10 @@ import org.jpos.iso.IFE_AMOUNT;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.header.BASE1Header;
 import org.jpos.iso.packager.Base1Packager;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+@Profile("server")
 @Service
 public class VisaAuthorizationService implements AuthorizationService {
 

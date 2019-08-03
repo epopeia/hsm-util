@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.ip.tcp.TcpReceivingChannelAdapter;
 import org.springframework.integration.ip.tcp.TcpSendingMessageHandler;
@@ -18,6 +19,7 @@ import org.springframework.messaging.support.GenericMessage;
 
 import io.epopeia.service.AuthorizationService;
 
+@Profile("server")
 @Configuration
 public class Iso8583Server {
 
