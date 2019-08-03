@@ -25,9 +25,9 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
 
 @Configuration
-public class Server {
+public class Iso8583Server {
 
-	private static final Logger LOGGER = LogManager.getLogger(Server.class);
+	private static final Logger LOGGER = LogManager.getLogger(Iso8583Server.class);
 
 	@Value("${iso8583.server.port:9090}")
 	private Integer port;

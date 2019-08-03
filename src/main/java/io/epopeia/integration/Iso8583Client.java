@@ -25,9 +25,9 @@ import org.springframework.messaging.Message;
 
 @Profile("client")
 @Configuration
-public class Client {
+public class Iso8583Client {
 
-	private static final Logger LOGGER = LogManager.getLogger(Client.class);
+	private static final Logger LOGGER = LogManager.getLogger(Iso8583Client.class);
 
 	@Value("${iso8583.server.host:localhost}")
 	private String host;

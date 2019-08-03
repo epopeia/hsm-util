@@ -14,15 +14,15 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import io.epopeia.integration.Server.CustomBase1Packager;
+import io.epopeia.integration.Iso8583Server.CustomBase1Packager;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes=Server.class)
+@ContextConfiguration(classes=Iso8583Server.class)
 @SpringIntegrationTest(noAutoStartup = "*")
 public class ServerTest {
 	
 	@Autowired
-	Server server;
+	Iso8583Server server;
 
 	@Test
 	public void handleMessageFromClientTest() throws ISOException {
