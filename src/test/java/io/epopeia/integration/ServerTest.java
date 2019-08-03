@@ -14,20 +14,20 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import io.epopeia.integration.Iso8583Server.CustomBase1Packager;
+import io.epopeia.service.VisaAuthorizationService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes=Iso8583Server.class)
+@ContextConfiguration(classes = { Iso8583Server.class, VisaAuthorizationService.class })
 @SpringIntegrationTest(noAutoStartup = "*")
 public class ServerTest {
-	
+
 	@Autowired
 	Iso8583Server server;
 
 	@Test
 	public void handleMessageFromClientTest() throws ISOException {
 		ISOMsg msg = new ISOMsg();
-		msg.setPackager(new CustomBase1Packager());
+		msg.setPackager(new VisaAuthorizationService.CustomBase1Packager());
 		msg.set(0, "0200");
 		msg.set(2, "4761340000000019");
 		msg.set(3, "004000");
@@ -52,9 +52,9 @@ public class ServerTest {
 		msg.set(52, "DAE84D88984C5A96");
 		msg.set(53, "2001010100000000");
 		msg.set(60, "42");
-		msg.set(63, "8070000002F1F1F1F1F2F3F4F5F6F7F8F9F0E9C7C1C2C3C640404040404040404040404040404040404040404040404040");
-		
-		
+		msg.set(63,
+				"8070000002F1F1F1F1F2F3F4F5F6F7F8F9F0E9C7C1C2C3C640404040404040404040404040404040404040404040404040");
+
 		final byte[] mb = msg.pack();
 
 		// get the header buffer
@@ -66,8 +66,7 @@ public class ServerTest {
 		final byte[] b = new byte[hb.length + mb.length];
 		System.arraycopy(hb, 0, b, 0, hb.length);
 		System.arraycopy(mb, 0, b, hb.length, mb.length);
-		
-		
+
 		Message<byte[]> message = new Message<byte[]>() {
 
 			@Override
