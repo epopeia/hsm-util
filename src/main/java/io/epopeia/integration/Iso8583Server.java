@@ -4,12 +4,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jpos.iso.IFE_AMOUNT;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
-import org.jpos.iso.ISOUtil;
 import org.jpos.iso.header.BASE1Header;
 import org.jpos.iso.packager.Base1Packager;
 import org.springframework.beans.factory.annotation.Value;
@@ -77,7 +77,7 @@ public class Iso8583Server {
 		LOGGER.info("-------------------------------------------------------------------");
 		message.getHeaders().forEach((k, v) -> LOGGER.info(String.format("%s: %s", k, v)));
 		final byte[] payloadRaw = message.getPayload();
-		LOGGER.info("Received from client: " + ISOUtil.hexString(payloadRaw));
+		LOGGER.info("Received from client: " + Hex.encodeHexString(payloadRaw));
 
 		final byte[] header = Arrays.copyOfRange(payloadRaw, 0, BASE1Header.LENGTH);
 		final byte[] iso8583 = Arrays.copyOfRange(payloadRaw, BASE1Header.LENGTH, payloadRaw.length);

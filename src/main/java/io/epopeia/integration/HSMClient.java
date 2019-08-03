@@ -1,12 +1,12 @@
 package io.epopeia.integration;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jpos.iso.ISOException;
-import org.jpos.iso.ISOUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.ip.tcp.TcpReceivingChannelAdapter;
 import org.springframework.integration.ip.tcp.TcpSendingMessageHandler;
@@ -15,6 +15,7 @@ import org.springframework.integration.ip.tcp.connection.TcpNetClientConnectionF
 import org.springframework.integration.ip.tcp.serializer.ByteArrayLengthHeaderSerializer;
 import org.springframework.messaging.Message;
 
+@Profile("hsm")
 @Configuration
 public class HSMClient {
 
@@ -67,10 +68,10 @@ public class HSMClient {
 	}
 
 	@ServiceActivator(inputChannel = hsmInChannel)
-	public void handleMessageFromHsm(Message<byte[]> message) throws ISOException {
+	public void handleMessageFromHsm(Message<byte[]> message) {
 		LOGGER.info("-------------------------------------------------------------------");
 		message.getHeaders().forEach((k, v) -> LOGGER.info(String.format("%s: %s", k, v)));
 		final byte[] payloadRaw = message.getPayload();
-		LOGGER.info("Received from hsm: " + ISOUtil.hexString(payloadRaw));
+		LOGGER.info("Received from hsm: " + Hex.encodeHexString(payloadRaw));
 	}
 }
