@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import io.epopeia.service.HsmService;
 
@@ -15,12 +16,17 @@ public class Iso8583ClientServer implements CommandLineRunner {
 	@Autowired(required = false)
 	private HsmService hsm;
 
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
 	public static void main(String... args) {
 		SpringApplication.run(Iso8583ClientServer.class, args);
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
+		jdbcTemplate.execute("DROP VIEW authorizator IF EXISTS");
+
 		if (hsm == null)
 			return;
 
