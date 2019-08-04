@@ -56,6 +56,7 @@ public class HSMClient {
 		final TcpNetClientConnectionFactory client = new TcpNetClientConnectionFactory(host, port);
 		client.setSerializer(hsmSerializer());
 		client.setDeserializer(hsmDeserializer());
+		client.setSingleUse(true);
 		return client;
 	}
 
