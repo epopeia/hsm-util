@@ -11,15 +11,15 @@ import io.epopeia.integration.HSMClient.HsmGateway;
 
 @Profile("hsm")
 @Service
-public class TalesHsmService implements HsmService {
+public class ThalesHsmService implements HsmService {
 
-	private static final Logger LOGGER = LogManager.getLogger(TalesHsmService.class);
+	private static final Logger LOGGER = LogManager.getLogger(ThalesHsmService.class);
 
 	@Autowired
 	private HsmGateway hsmGateway;
 
 	@Override
-	public void cvvGenerate(String pan, int expYear, int expMonth, String srvCode, String cvkKey) {
+	public boolean cvvGenerate(String pan, int expYear, int expMonth, String srvCode, String cvkKey) {
 		final String header = "0000";
 
 		final StringBuffer sb = new StringBuffer();
@@ -33,11 +33,13 @@ public class TalesHsmService implements HsmService {
 
 		final String ret = hsmGateway.sendAndReceive(sb.toString());
 		final HSMResponse hsmResponse = new HSMResponse(ret, header, "CX");
-		LOGGER.info("Response for cvvGenerate: " + hsmResponse.isSuccessful());
+		final boolean isSuccessful = hsmResponse.isSuccessful();
+		LOGGER.info("Response for cvvGenerate: " + isSuccessful);
+		return isSuccessful;
 	}
 
 	@Override
-	public void cvvValidate(String pan, int expYear, int expMonth, String srvCode, String cvkKey) {
+	public boolean cvvValidate(String pan, int expYear, int expMonth, String srvCode, String cvkKey) {
 		final String header = "0000";
 
 		final StringBuffer sb = new StringBuffer();
@@ -51,11 +53,13 @@ public class TalesHsmService implements HsmService {
 
 		final String ret = hsmGateway.sendAndReceive(sb.toString());
 		final HSMResponse hsmResponse = new HSMResponse(ret, header, "CZ");
-		LOGGER.info("Response for cvvValidate: " + hsmResponse.isSuccessful());
+		final boolean isSuccessful = hsmResponse.isSuccessful();
+		LOGGER.info("Response for cvvValidate: " + isSuccessful);
+		return isSuccessful;
 	}
 
 	@Override
-	public void dekEncode(String data, String dekKey) {
+	public boolean dekEncode(String data, String dekKey) {
 		final String header = "0000";
 
 		final StringBuffer sb = new StringBuffer();
@@ -71,21 +75,25 @@ public class TalesHsmService implements HsmService {
 
 		final String ret = hsmGateway.sendAndReceive(sb.toString());
 		final HSMResponse hsmResponse = new HSMResponse(ret, header, "M1");
-		LOGGER.info("Response for dekEncode: " + hsmResponse.isSuccessful());
+		final boolean isSuccessful = hsmResponse.isSuccessful();
+		LOGGER.info("Response for dekEncode: " + isSuccessful);
+		return isSuccessful;
 	}
 
 	@Override
-	public void pinGenerate(String pan) {
+	public boolean pinGenerate(String pan) {
 		final String header = "0000";
 		final String s = header + "JA" + pan.substring(pan.length() - 13, pan.length() - 1);
 
 		final String ret = hsmGateway.sendAndReceive(s);
 		final HSMResponse hsmResponse = new HSMResponse(ret, header, "JB");
-		LOGGER.info("Response for pinGenerate: " + hsmResponse.isSuccessful());
+		final boolean isSuccessful = hsmResponse.isSuccessful();
+		LOGGER.info("Response for pinGenerate: " + isSuccessful);
+		return isSuccessful;
 	}
 
 	@Override
-	public void pinValidate(String pan, String pinblock, String pinhost, String tpk) {
+	public boolean pinValidate(String pan, String pinblock, String pinhost, String tpk) {
 		final String header = "0000"; // Numero random
 
 		final StringBuffer sb = new StringBuffer();
@@ -99,18 +107,21 @@ public class TalesHsmService implements HsmService {
 
 		final String ret = hsmGateway.sendAndReceive(sb.toString());
 		final HSMResponse hsmResponse = new HSMResponse(ret, header, "BD");
-		LOGGER.info("Response for pinValidate: " + hsmResponse.isSuccessful());
+		final boolean isSuccessful = hsmResponse.isSuccessful();
+		LOGGER.info("Response for pinValidate: " + isSuccessful);
+		return isSuccessful;
 	}
-	
+
 	@Override
-	public void performDiagnostic(){
+	public boolean performDiagnostic() {
 		final String header = "0000";
 		final StringBuffer sb = new StringBuffer();
 		sb.append(header);
 		sb.append("NC");
 		final String ret = hsmGateway.sendAndReceive(sb.toString());
 		final HSMResponse hsmResponse = new HSMResponse(ret, header, "ND");
-		LOGGER.info("Response for performDiagnostics	: " + hsmResponse.isSuccessful());	
-		
+		final boolean isSuccessful = hsmResponse.isSuccessful();
+		LOGGER.info("Response for performDiagnostics: " + isSuccessful);
+		return isSuccessful;
 	}
 }

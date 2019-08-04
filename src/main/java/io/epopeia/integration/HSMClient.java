@@ -2,7 +2,6 @@ package io.epopeia.integration;
 
 import java.nio.charset.StandardCharsets;
 
-import org.apache.commons.codec.binary.Hex;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +20,7 @@ import org.springframework.messaging.MessageHandler;
 @Profile("hsm")
 @Configuration
 public class HSMClient {
-	
+
 	private static final Logger LOGGER = LogManager.getLogger(HSMClient.class);
 
 	@Value("${iso8583.hsm.host:localhost}")
@@ -74,7 +73,8 @@ public class HSMClient {
 		LOGGER.info("-------------------------------------------------------------------");
 		message.getHeaders().forEach((k, v) -> LOGGER.info(String.format("%s: %s", k, v)));
 		final byte[] payloadRaw = message.getPayload();
-		LOGGER.info("Received from HSM: " + Hex.encodeHexString(payloadRaw));
-		return new String(payloadRaw, StandardCharsets.US_ASCII);
+		final String payloadString = new String(payloadRaw, StandardCharsets.US_ASCII);
+		LOGGER.info("Received from HSM: " + payloadString);
+		return payloadString;
 	}
 }
