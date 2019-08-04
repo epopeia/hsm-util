@@ -101,4 +101,16 @@ public class TalesHsmService implements HsmService {
 		final HSMResponse hsmResponse = new HSMResponse(ret, header, "BD");
 		LOGGER.info("Response for pinValidate: " + hsmResponse.isSuccessful());
 	}
+	
+	@Override
+	public void performDiagnostic(){
+		final String header = "0000";
+		final StringBuffer sb = new StringBuffer();
+		sb.append(header);
+		sb.append("NC");
+		final String ret = hsmGateway.sendAndReceive(sb.toString());
+		final HSMResponse hsmResponse = new HSMResponse(ret, header, "ND");
+		LOGGER.info("Response for performDiagnostics	: " + hsmResponse.isSuccessful());	
+		
+	}
 }

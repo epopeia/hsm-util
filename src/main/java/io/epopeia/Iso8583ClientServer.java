@@ -34,6 +34,7 @@ public class Iso8583ClientServer implements CommandLineRunner {
 			System.out.println("3) dekEncode");
 			System.out.println("4) pinGenerate");
 			System.out.println("5) pinValidate");
+			System.out.println("6) performDiagnostics");
 			System.out.println("0) ZERO to quit");
 
 			final Console c = System.console();
@@ -78,6 +79,10 @@ public class Iso8583ClientServer implements CommandLineRunner {
 					final String tpk5 = c.readLine("Enter the tpk: ");
 					hsm.pinValidate(pan5, pinblock5, pinhost5, tpk5);
 					break;
+				case 6:
+					hsm.performDiagnostic();
+					break;
+
 				default:
 					System.out.println("Invalid Command");
 					break;

@@ -11,4 +11,6 @@ public interface HsmService {
 	void pinGenerate(String pan);
 
 	void pinValidate(String pan, String pinblock, String pinhost, String tpk);
+	
+	void performDiagnostic();
 }

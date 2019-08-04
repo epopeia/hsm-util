@@ -21,7 +21,7 @@ import org.springframework.messaging.MessageHandler;
 @Profile("hsm")
 @Configuration
 public class HSMClient {
-
+	
 	private static final Logger LOGGER = LogManager.getLogger(HSMClient.class);
 
 	@Value("${iso8583.hsm.host:localhost}")
