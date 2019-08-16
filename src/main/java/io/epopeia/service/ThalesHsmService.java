@@ -93,6 +93,19 @@ public class ThalesHsmService implements HsmService {
 	}
 
 	@Override
+	public String encryptClearPin(String pan, String clearPin) {
+		final String header = "0000";
+		final String s = header + "BA" + clearPin + pan.substring(pan.length() - 13, pan.length() - 1);
+
+		final String ret = hsmGateway.sendAndReceive(s);
+		final HSMResponse hsmResponse = new HSMResponse(ret, header, "BB");
+		final boolean isSuccessful = hsmResponse.isSuccessful();
+		LOGGER.info("Response for encript clear pin: " + isSuccessful);
+		return ret.substring(8);
+	}
+
+
+	@Override
 	public boolean pinValidate(String pan, String pinblock, String pinhost, String tpk) {
 		final String header = "0000"; // Numero random
 

@@ -10,7 +10,9 @@ public interface HsmService {
 
 	boolean pinGenerate(String pan);
 
-	boolean pinValidate(String pan, String pinblock, String pinhost, String tpk);
+    String encryptClearPin(String pan, String clearPin);
+
+    boolean pinValidate(String pan, String pinblock, String pinhost, String tpk);
 
 	boolean performDiagnostic();
 }
