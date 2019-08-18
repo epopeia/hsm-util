@@ -95,7 +95,12 @@ public class ThalesHsmService implements HsmService {
 	@Override
 	public String encryptClearPin(String pan, String clearPin) {
 		final String header = "0000";
-		final String s = header + "BA" +clearPin.length()+  clearPin + pan.substring(pan.length() - 13, pan.length() - 1);
+		final String s = header 
+				+ "BA" 
+				//+ clearPin.length()
+				+ "F"
+				+ clearPin 
+				+ pan.substring(pan.length() - 13, pan.length() - 1);
 
 		final String ret = hsmGateway.sendAndReceive(s);
 		final HSMResponse hsmResponse = new HSMResponse(ret, header, "BB");
@@ -113,9 +118,9 @@ public class ThalesHsmService implements HsmService {
 		sb.append(header); // header
 		sb.append("BC"); // command
 		sb.append("U");
-		sb.append("E698B0C8C8668D49AAE6279BF81B856B"); // tpk
+		sb.append("F777174DFA76460D47874962E56DA9DD"); // tpk
 		sb.append(pinblock); // pinblock da rede
-		sb.append("48"); // iso0 - pinblock format
+		sb.append("05"); // iso0 - pinblock format
 		sb.append(pan.substring(pan.length() - 13, pan.length() - 1)); // 12 digitos do pan
 		sb.append(pinhost); // pinhost
 
