@@ -8,7 +8,7 @@ public interface HsmService {
 
 	boolean dekEncode(String data, String dekKey);
 
-	boolean pinGenerate(String pan);
+	String pinGenerate(String pan);
 
     String encryptClearPin(String pan, String clearPin);
 

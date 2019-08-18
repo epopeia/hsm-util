@@ -16,7 +16,7 @@ public class ThalesHsmService implements HsmService {
 	private static final Logger LOGGER = LogManager.getLogger(ThalesHsmService.class);
 
 	@Autowired
-	private HsmGateway hsmGateway;
+	public HsmGateway hsmGateway;
 
 	@Override
 	public boolean cvvGenerate(String pan, int expYear, int expMonth, String srvCode, String cvkKey) {
@@ -81,7 +81,7 @@ public class ThalesHsmService implements HsmService {
 	}
 
 	@Override
-	public boolean pinGenerate(String pan) {
+	public String pinGenerate(String pan) {
 		final String header = "0000";
 		final String s = header + "JA" + pan.substring(pan.length() - 13, pan.length() - 1);
 
@@ -89,13 +89,13 @@ public class ThalesHsmService implements HsmService {
 		final HSMResponse hsmResponse = new HSMResponse(ret, header, "JB");
 		final boolean isSuccessful = hsmResponse.isSuccessful();
 		LOGGER.info("Response for pinGenerate: " + isSuccessful);
-		return isSuccessful;
+		return ret.substring(ret.length()-4);
 	}
 
 	@Override
 	public String encryptClearPin(String pan, String clearPin) {
 		final String header = "0000";
-		final String s = header + "BA" + clearPin + pan.substring(pan.length() - 13, pan.length() - 1);
+		final String s = header + "BA" +clearPin.length()+  clearPin + pan.substring(pan.length() - 13, pan.length() - 1);
 
 		final String ret = hsmGateway.sendAndReceive(s);
 		final HSMResponse hsmResponse = new HSMResponse(ret, header, "BB");
@@ -112,11 +112,13 @@ public class ThalesHsmService implements HsmService {
 		final StringBuffer sb = new StringBuffer();
 		sb.append(header); // header
 		sb.append("BC"); // command
-		sb.append(tpk); // tpk
+		sb.append("U");
+		sb.append("E698B0C8C8668D49AAE6279BF81B856B"); // tpk
 		sb.append(pinblock); // pinblock da rede
-		sb.append("01"); // iso0 - pinblock format
+		sb.append("48"); // iso0 - pinblock format
 		sb.append(pan.substring(pan.length() - 13, pan.length() - 1)); // 12 digitos do pan
 		sb.append(pinhost); // pinhost
+
 
 		final String ret = hsmGateway.sendAndReceive(sb.toString());
 		final HSMResponse hsmResponse = new HSMResponse(ret, header, "BD");
