@@ -46,9 +46,9 @@ public class HsmTest {
 	@Test
 	public void pinValidateTest(){
 		String pan = "4761340000000019";
-		String pinblock = "7AF2B8B6C2D2C964";
+		String pinblock = "BF6572C824CE3604";
 		String pinhost = "01234";
-		String tpk = "E698B0C8C8668D49AAE6279BF81B856B";
+		String tpk = "23A080EB030EF7A298D1B349B306C615";
 		boolean validated = service.pinValidate(pan, pinblock, pinhost, tpk);
 		assertTrue(validated);
 	}
@@ -57,6 +57,12 @@ public class HsmTest {
 	public void encryptClearPinTest(){
 		String encryptedPin = service.encryptClearPin("4761340000000019", "1234");
 		assertTrue(encryptedPin.equals("01234"));
+	}
+	
+	@Test
+	public void NCTest(){
+		boolean isOk = service.performDiagnostic();
+		assertTrue(isOk);
 	}
 
 }

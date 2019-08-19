@@ -116,13 +116,21 @@ public class ThalesHsmService implements HsmService {
 
 		final StringBuffer sb = new StringBuffer();
 		sb.append(header); // header
+		LOGGER.info(header);
 		sb.append("BC"); // command
+		LOGGER.info("BC");
 		sb.append("U");
-		sb.append("F777174DFA76460D47874962E56DA9DD"); // tpk
+		LOGGER.info("U");
+		sb.append(tpk); // tpk
+		LOGGER.info(tpk);
 		sb.append(pinblock); // pinblock da rede
-		sb.append("05"); // iso0 - pinblock format
+		LOGGER.info(pinblock);
+		sb.append("01"); // iso0 - pinblock format
+		LOGGER.info("01");
 		sb.append(pan.substring(pan.length() - 13, pan.length() - 1)); // 12 digitos do pan
+		LOGGER.info(pan.substring(pan.length() - 13, pan.length() - 1));
 		sb.append(pinhost); // pinhost
+		LOGGER.info(pinhost);
 
 
 		final String ret = hsmGateway.sendAndReceive(sb.toString());

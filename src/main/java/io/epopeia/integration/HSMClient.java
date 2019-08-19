@@ -26,7 +26,7 @@ public class HSMClient {
 	@Value("${iso8583.hsm.host:localhost}")
 	private String host;
 
-	@Value("${iso8583.hsm.port:9998}")
+	@Value("${iso8583.hsm.port:3001}")
 	private Integer port;
 
 	@Value("${iso8583.hsm.header.length:2}")
