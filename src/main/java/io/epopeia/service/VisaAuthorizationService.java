@@ -52,7 +52,7 @@ public class VisaAuthorizationService implements AuthorizationService {
 
 				String pinhost = hsmService.encryptClearPin(m.getString(2), "1234");
 
-				if(hsmService.pinValidate(
+				if(!hsmService.pinValidate(
 						m.getString(2),
 						m.getString(52),
 						pinhost,
