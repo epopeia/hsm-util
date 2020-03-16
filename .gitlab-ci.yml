@@ -1,0 +1,41 @@
+variables:
+  DOCKER_DRIVER: overlay2
+
+stages:
+  - maven-build
+  - docker-build
+
+maven-build:
+  image: maven:3.3.9-jdk-8
+  stage: maven-build
+  script:
+    - mvn clean
+    - mvn package
+  artifacts:
+    name: hsm-util
+    paths:
+      - target/*.jar
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: push
+    paths:
+      - target/*.jar
+  only:
+    - master
+
+docker-build:
+  image: docker:latest
+  stage: docker-build
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - IMAGE=hsm-util:1.0.0
+    - docker build --pull -t "$CI_REGISTRY_IMAGE/$IMAGE" .
+    - docker push "$CI_REGISTRY_IMAGE/$IMAGE"
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: pull
+  only:
+    - master
