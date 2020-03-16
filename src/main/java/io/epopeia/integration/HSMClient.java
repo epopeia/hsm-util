@@ -60,7 +60,7 @@ public class HSMClient {
 
 	@Bean
 	@ServiceActivator(inputChannel = hsmOutChannel)
-	public MessageHandler hsmOut(Message<byte[]> message) {
+	public MessageHandler hsmOut() {
 		final TcpOutboundGateway gate = new TcpOutboundGateway();
 		gate.setConnectionFactory(myHsm());
 		gate.setOutputChannelName(hsmInChannel);
