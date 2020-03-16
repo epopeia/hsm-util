@@ -15,4 +15,6 @@ public interface HsmService {
     boolean pinValidate(String pan, String pinblock, String pinhost, String tpk);
 
 	boolean performDiagnostic();
+
+	String sendBufferCommand(String buffer);
 }

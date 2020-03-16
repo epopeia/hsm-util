@@ -7,7 +7,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.ip.tcp.TcpOutboundGateway;
@@ -17,19 +16,18 @@ import org.springframework.integration.ip.tcp.serializer.ByteArrayLengthHeaderSe
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandler;
 
-@Profile("hsm")
 @Configuration
 public class HSMClient {
 
 	private static final Logger LOGGER = LogManager.getLogger(HSMClient.class);
 
-	@Value("${iso8583.hsm.host:localhost}")
+	@Value("${hsm.host:localhost}")
 	private String host;
 
-	@Value("${iso8583.hsm.port:3001}")
+	@Value("${hsm.port:3001}")
 	private Integer port;
 
-	@Value("${iso8583.hsm.header.length:2}")
+	@Value("${hsm.header.length:2}")
 	private int headerLength;
 
 	@MessagingGateway(defaultRequestChannel = "hsmOutChannel")
@@ -62,7 +60,7 @@ public class HSMClient {
 
 	@Bean
 	@ServiceActivator(inputChannel = hsmOutChannel)
-	public MessageHandler hsmOut() {
+	public MessageHandler hsmOut(Message<byte[]> message) {
 		final TcpOutboundGateway gate = new TcpOutboundGateway();
 		gate.setConnectionFactory(myHsm());
 		gate.setOutputChannelName(hsmInChannel);

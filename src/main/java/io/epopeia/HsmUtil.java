@@ -6,29 +6,36 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import io.epopeia.service.HsmService;
 
 @SpringBootApplication
-public class Iso8583ClientServer implements CommandLineRunner {
+public class HsmUtil implements CommandLineRunner {
 
-	@Autowired(required = false)
+	@Autowired
 	private HsmService hsm;
 
 	@Autowired
-	private JdbcTemplate jdbcTemplate;
+	private ConfigurableApplicationContext ctx;
 
 	public static void main(String... args) {
-		SpringApplication.run(Iso8583ClientServer.class, args);
+		SpringApplication.run(HsmUtil.class, args);
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
-		jdbcTemplate.execute("DROP VIEW authorizator IF EXISTS");
 
-		if (hsm == null)
+		if (hsm == null) {
+			ctx.close();
 			return;
+		}
+
+		if (args.length > 0) {
+			hsm.sendBufferCommand(args[0]);
+			ctx.close();
+			return;
+		}
 
 		int iCmd = Integer.MAX_VALUE;
 		while (iCmd > 0) {
@@ -52,6 +59,7 @@ public class Iso8583ClientServer implements CommandLineRunner {
 				switch (iCmd) {
 				case 0:
 					System.out.println("Exiting.........");
+					ctx.close();
 					return;
 				case 1:
 					final String pan1 = c.readLine("Enter the pan: ");

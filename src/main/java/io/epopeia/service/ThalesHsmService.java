@@ -3,13 +3,11 @@ package io.epopeia.service;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import io.epopeia.hsm.HSMResponse;
 import io.epopeia.integration.HSMClient.HsmGateway;
 
-@Profile("hsm")
 @Service
 public class ThalesHsmService implements HsmService {
 
@@ -89,18 +87,15 @@ public class ThalesHsmService implements HsmService {
 		final HSMResponse hsmResponse = new HSMResponse(ret, header, "JB");
 		final boolean isSuccessful = hsmResponse.isSuccessful();
 		LOGGER.info("Response for pinGenerate: " + isSuccessful);
-		return ret.substring(ret.length()-4);
+		return ret.substring(ret.length() - 4);
 	}
 
 	@Override
 	public String encryptClearPin(String pan, String clearPin) {
 		final String header = "0000";
-		final String s = header 
-				+ "BA" 
-				//+ clearPin.length()
-				+ "F"
-				+ clearPin 
-				+ pan.substring(pan.length() - 13, pan.length() - 1);
+		final String s = header + "BA"
+		// + clearPin.length()
+				+ "F" + clearPin + pan.substring(pan.length() - 13, pan.length() - 1);
 
 		final String ret = hsmGateway.sendAndReceive(s);
 		final HSMResponse hsmResponse = new HSMResponse(ret, header, "BB");
@@ -108,7 +103,6 @@ public class ThalesHsmService implements HsmService {
 		LOGGER.info("Response for encript clear pin: " + isSuccessful);
 		return ret.substring(8);
 	}
-
 
 	@Override
 	public boolean pinValidate(String pan, String pinblock, String pinhost, String tpk) {
@@ -132,7 +126,6 @@ public class ThalesHsmService implements HsmService {
 		sb.append(pinhost); // pinhost
 		LOGGER.info(pinhost);
 
-
 		final String ret = hsmGateway.sendAndReceive(sb.toString());
 		final HSMResponse hsmResponse = new HSMResponse(ret, header, "BD");
 		final boolean isSuccessful = hsmResponse.isSuccessful();
@@ -151,5 +144,12 @@ public class ThalesHsmService implements HsmService {
 		final boolean isSuccessful = hsmResponse.isSuccessful();
 		LOGGER.info("Response for performDiagnostics: " + isSuccessful);
 		return isSuccessful;
+	}
+
+	@Override
+	public String sendBufferCommand(String buffer) {
+		final String ret = hsmGateway.sendAndReceive(buffer);
+		LOGGER.info("Response buffer from HSM: " + ret);
+		return ret;
 	}
 }

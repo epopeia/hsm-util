@@ -1,22 +1,13 @@
-# iso8583-client-server
+# HSM Utility
 
-java -jar ./target/iso8583-client-server-0.0.1-SNAPSHOT.jar
+## Inform the HSM command buffer for directly execution instead of CLI options:
 
--Dspring.profiles.active=[server,client,echotest,hsm]
+java -jar ./target/hsm-util-0.0.1-SNAPSHOT.jar "command buffer"
 
--Diso8583.server.host=localhost
+## Customize the jar execution with this options if necessary (this example values are already default)
 
--Diso8583.server.port=9090
+-Dhsm.host=localhost
 
--Diso8583.server.header.length=4
+-Dhsm.port=3001
 
--Diso8583.client.header.length=4
-
--Diso8583.hsm.host=localhost
-
--Diso8583.hsm.port=7070
-
--Diso8583.hsm.header.length=2
-
-# Links
-http://localhost:8080/h2
+-Dhsm.header.length=2
