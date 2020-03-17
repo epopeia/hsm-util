@@ -1,6 +1,7 @@
 package io.epopeia.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.epopeia.hsm.HSMResponse;
@@ -11,6 +12,9 @@ public class ThalesHsmService implements HsmService {
 
 	@Autowired
 	public HsmGateway hsmGateway;
+
+	@Value("${hsm.lmk:%01}")
+	private String lmk;
 
 	@Override
 	public boolean cvvGenerate(String pan, int expYear, int expMonth, String srvCode, String cvkKey) {
@@ -55,7 +59,7 @@ public class ThalesHsmService implements HsmService {
 	@Override
 	public boolean dekEncode(String data, String dekKey) {
 		final String header = "0000";
-
+		
 		final StringBuffer sb = new StringBuffer();
 		sb.append(header); // 0000 header
 		sb.append("M0"); // command to encrypt
@@ -64,13 +68,19 @@ public class ThalesHsmService implements HsmService {
 		sb.append("1"); // 1 output hex encoded
 		sb.append("00B"); // 00B key type
 		sb.append("U" + dekKey); // dek key
-		sb.append(String.format("%4d", Integer.toHexString(data.length()))); // max 32000 bytes, length in hex
+		final String dataLength = Integer.toHexString(data.length()).toUpperCase();
+		final String dataLengthPadZeros = String.format("%1$" + 4 + "s", dataLength).replace(' ', '0');
+		sb.append(dataLengthPadZeros);
 		sb.append(data); // multiples of 16
+		sb.append(lmk);
 
-		final String ret = hsmGateway.sendAndReceive(sb.toString());
+		final String cmd = sb.toString();
+		System.out.println("sending to HSM: " + cmd);
+		final String ret = hsmGateway.sendAndReceive(cmd);
 		final HSMResponse hsmResponse = new HSMResponse(ret, header, "M1");
 		final boolean isSuccessful = hsmResponse.isSuccessful();
-		System.out.println("Response for dekEncode: " + isSuccessful);
+		final String retData = hsmResponse.getData();
+		System.out.println("Response for dekEncode: " + isSuccessful + " data: " + retData);
 		return isSuccessful;
 	}
 

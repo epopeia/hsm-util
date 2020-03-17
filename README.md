@@ -12,6 +12,8 @@
 
 -Dhsm.header.length=2
 
+-Dhsm.lmk=%01
+
 ## To run with Docker use:
 
 `docker run registry.gitlab.com/bit55/public/hsm-util/hsm-util "command buffer goes here"`

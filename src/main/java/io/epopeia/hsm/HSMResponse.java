@@ -21,7 +21,9 @@ public class HSMResponse {
 		this.header = cmd.substring(0, 4); // 0000
 		this.commandReturn = cmd.substring(4, 6); // JA -> JB
 		this.errorCode = cmd.substring(6, 8);
-		this.data = cmd.substring(8);
+
+		final Integer dataLen = Integer.parseUnsignedInt(cmd.substring(8, 12), 16);
+		this.data = cmd.substring(12, 12 + dataLen);
 
 		this.expectedCommandReturn = expectedCommand;
 		this.expectedHeader = expectedHeader; // header enviado
