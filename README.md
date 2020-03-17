@@ -2,7 +2,7 @@
 
 ## Inform the HSM command buffer for directly execution instead of CLI options:
 
-java -jar ./target/hsm-util-0.0.1-SNAPSHOT.jar "command buffer"
+`java -jar ./target/hsm-util-0.0.1-SNAPSHOT.jar "command buffer"`
 
 ## Customize the jar execution with this options if necessary (this example values are already default)
 
@@ -14,9 +14,9 @@ java -jar ./target/hsm-util-0.0.1-SNAPSHOT.jar "command buffer"
 
 ## To run with Docker use:
 
-docker run hsm-util "command buffer goes here"
+`docker run hsm-util "command buffer goes here"`
 
 or run in an iterative mode with menu options:
 
-docker run -it hsm-util
+`docker run -it hsm-util`
 
