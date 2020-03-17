@@ -31,7 +31,7 @@ docker-build:
   before_script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   script:
-    - IMAGE=hsm-util:1.0.0
+    - IMAGE=hsm-util:lateast
     - docker build --pull -t "$CI_REGISTRY_IMAGE/$IMAGE" .
     - docker push "$CI_REGISTRY_IMAGE/$IMAGE"
   cache:

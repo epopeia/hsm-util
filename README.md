@@ -11,3 +11,12 @@ java -jar ./target/hsm-util-0.0.1-SNAPSHOT.jar "command buffer"
 -Dhsm.port=3001
 
 -Dhsm.header.length=2
+
+## To run with Docker use:
+
+docker run hsm-util "command buffer goes here"
+
+or run in an iterative mode with menu options:
+
+docker run -it hsm-util
+
