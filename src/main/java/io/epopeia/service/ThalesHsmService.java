@@ -59,7 +59,7 @@ public class ThalesHsmService implements HsmService {
 	@Override
 	public boolean dekEncode(String data, String dekKey) {
 		final String header = "0000";
-		
+
 		final StringBuffer sb = new StringBuffer();
 		sb.append(header); // 0000 header
 		sb.append("M0"); // command to encrypt
@@ -78,6 +78,34 @@ public class ThalesHsmService implements HsmService {
 		System.out.println("sending to HSM: " + cmd);
 		final String ret = hsmGateway.sendAndReceive(cmd);
 		final HSMResponse hsmResponse = new HSMResponse(ret, header, "M1");
+		final boolean isSuccessful = hsmResponse.isSuccessful();
+		final String retData = hsmResponse.getData();
+		System.out.println("Response for dekEncode: " + isSuccessful + " data: " + retData);
+		return isSuccessful;
+	}
+
+	@Override
+	public boolean dekDecode(String encriptedData, String dekKey) {
+		final String header = "0000";
+
+		final StringBuffer sb = new StringBuffer();
+		sb.append(header); // 0000 header
+		sb.append("M2"); // command to encrypt
+		sb.append("00"); // 00 ECB crypto
+		sb.append("1"); // 1 hex encoded
+		sb.append("2"); // 2 text encoded
+		sb.append("00B"); // 00B key type
+		sb.append("U" + dekKey); // dek key
+		final String dataLength = Integer.toHexString(encriptedData.length()).toUpperCase();
+		final String dataLengthPadZeros = String.format("%1$" + 4 + "s", dataLength).replace(' ', '0');
+		sb.append(dataLengthPadZeros);
+		sb.append(encriptedData);
+		sb.append(lmk);
+
+		final String cmd = sb.toString();
+		System.out.println("sending to HSM: " + cmd);
+		final String ret = hsmGateway.sendAndReceive(cmd);
+		final HSMResponse hsmResponse = new HSMResponse(ret, header, "M3");
 		final boolean isSuccessful = hsmResponse.isSuccessful();
 		final String retData = hsmResponse.getData();
 		System.out.println("Response for dekEncode: " + isSuccessful + " data: " + retData);

@@ -4,7 +4,8 @@ import java.util.Hashtable;
 
 public class HSMResponse {
 
-	private Hashtable<String, String> errors;
+	private static Hashtable<String, String> errors = new Hashtable<String, String>();
+
 	protected String cmd;
 	protected String header;
 	protected String commandReturn;
@@ -14,20 +15,7 @@ public class HSMResponse {
 	private String expectedHeader;
 	private String expectedCommandReturn;
 
-	public HSMResponse(String cmd, String expectedHeader, String expectedCommand) {
-		errors = new Hashtable<String, String>();
-
-		this.cmd = cmd;
-		this.header = cmd.substring(0, 4); // 0000
-		this.commandReturn = cmd.substring(4, 6); // JA -> JB
-		this.errorCode = cmd.substring(6, 8);
-
-		final Integer dataLen = Integer.parseUnsignedInt(cmd.substring(8, 12), 16);
-		this.data = cmd.substring(12, 12 + dataLen);
-
-		this.expectedCommandReturn = expectedCommand;
-		this.expectedHeader = expectedHeader; // header enviado
-
+	static {
 		errors.put("00", "No error");
 		errors.put("01", "Verification failure or warning of imported key parity error");
 		errors.put("02", "Key inappropriate length for algorithm");
@@ -118,9 +106,15 @@ public class HSMResponse {
 		errors.put("B9", "Invalid new value");
 		errors.put("BA", "No key status block in the key block");
 		errors.put("BB", "Invalid wrapping key");
+	}
 
-		parse();
-
+	public HSMResponse(String cmd, String expectedHeader, String expectedCommand) {
+		this.cmd = cmd;
+		this.header = cmd.substring(0, 4); // 0000
+		this.commandReturn = cmd.substring(4, 6); // JA -> JB
+		this.errorCode = cmd.substring(6, 8);
+		this.expectedCommandReturn = expectedCommand;
+		this.expectedHeader = expectedHeader; // header enviado
 	}
 
 	public Boolean isSuccessful() {
@@ -128,13 +122,15 @@ public class HSMResponse {
 				&& this.expectedCommandReturn.equals(this.commandReturn);
 	}
 
-	public void parse() {
+	public String getData() {
+		if (isSuccessful()) {
+			final Integer dataLen = Integer.parseUnsignedInt(cmd.substring(8, 12), 16);
+			this.data = cmd.substring(12, 12 + dataLen);
+			return this.data;
+		}
+		return "";
 	}
 
-	public String getData() {
-		return this.data;
-	}
-	
 	public String getError() {
 		return "" + this.errorCode + " : " + errors.get(this.errorCode);
 	}

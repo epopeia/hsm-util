@@ -44,10 +44,11 @@ public class HsmUtil implements CommandLineRunner {
 			System.out.println("########################");
 			System.out.println("1) cvvGenerate");
 			System.out.println("2) cvvValidate");
-			System.out.println("3) dekEncode");
-			System.out.println("4) pinGenerate");
-			System.out.println("5) pinValidate");
-			System.out.println("6) performDiagnostics");
+			System.out.println("3) dekEncode (text flag)");
+			System.out.println("4) dekDecode");
+			System.out.println("5) pinGenerate");
+			System.out.println("6) pinValidate");
+			System.out.println("7) performDiagnostics");
 			System.out.println("0) ZERO to quit");
 
 			final Console c = System.console();
@@ -88,17 +89,22 @@ public class HsmUtil implements CommandLineRunner {
 					hsm.dekEncode(data, dekKey);
 					break;
 				case 4:
+					final String encriptedData = c.readLine("Enter the data encripted: ");
+					final String dekKeyToDecript = c.readLine("Enter the dekKey to decript: ");
+					hsm.dekDecode(encriptedData, dekKeyToDecript);
+					break;
+				case 5:
 					final String pan4 = c.readLine("Enter the pan: ");
 					hsm.pinGenerate(pan4);
 					break;
-				case 5:
+				case 6:
 					final String pan5 = c.readLine("Enter the pan: ");
 					final String pinblock5 = c.readLine("Enter the srvCode: ");
 					final String pinhost5 = c.readLine("Enter the cvkKey: ");
 					final String tpk5 = c.readLine("Enter the tpk: ");
 					hsm.pinValidate(pan5, pinblock5, pinhost5, tpk5);
 					break;
-				case 6:
+				case 7:
 					hsm.performDiagnostic();
 					break;
 
