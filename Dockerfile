@@ -1,8 +1,8 @@
-FROM openjdk:8-alpine
+FROM openjdk:8-jre-alpine
 
 COPY target/hsm-util-0.0.1-SNAPSHOT.jar /opt/hsm-util.jar
 
 WORKDIR /opt
 
-ENTRYPOINT ["java", "-jar", "hsm-util.jar"]
+ENTRYPOINT ["java", "-Dhsm.host=host.docker.internal", "-jar", "hsm-util.jar"]
 
