@@ -32,8 +32,8 @@ docker-build:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   script:
     - IMAGE=hsm-util:latest
-    - docker build --pull -t "registry.gitlab.com/bit55/$IMAGE" .
-    - docker push "registry.gitlab.com/bit55/$IMAGE"
+    - docker build --pull -t "$CI_REGISTRY_IMAGE/$IMAGE" .
+    - docker push "$CI_REGISTRY_IMAGE/$IMAGE"
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: pull
