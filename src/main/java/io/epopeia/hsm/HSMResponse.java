@@ -132,4 +132,8 @@ public class HSMResponse {
 	public String getData() {
 		return this.data;
 	}
+	
+	public String getError() {
+		return "" + this.errorCode + " : " + errors.get(this.errorCode);
+	}
 }

@@ -69,11 +69,11 @@ public class HSMClient {
 
 	@ServiceActivator(inputChannel = hsmInChannel)
 	public String handleMessageFromHsm(Message<byte[]> message) {
-		LOGGER.info("-------------------------------------------------------------------");
-		message.getHeaders().forEach((k, v) -> LOGGER.info(String.format("%s: %s", k, v)));
+		System.out.println("-------------------------------------------------------------------");
+		message.getHeaders().forEach((k, v) -> LOGGER.trace(String.format("%s: %s", k, v)));
 		final byte[] payloadRaw = message.getPayload();
 		final String payloadString = new String(payloadRaw, StandardCharsets.US_ASCII);
-		LOGGER.info("Received from HSM: " + payloadString);
+		System.out.println("Received from HSM: " + payloadString);
 		return payloadString;
 	}
 }

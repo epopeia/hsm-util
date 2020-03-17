@@ -51,6 +51,11 @@ public class HsmUtil implements CommandLineRunner {
 			System.out.println("0) ZERO to quit");
 
 			final Console c = System.console();
+			if (c == null) {
+				System.out.println("Console not avaiable in this environment. Exiting.........");
+				ctx.close();
+				return;
+			}
 			final String ret = c.readLine("Enter the command number: ");
 
 			try {
