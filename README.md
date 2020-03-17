@@ -14,9 +14,9 @@
 
 ## To run with Docker use:
 
-`docker run hsm-util "command buffer goes here"`
+`docker run registry.gitlab.com/bit55/public/hsm-util/hsm-util "command buffer goes here"`
 
 or run in an iterative mode with menu options:
 
-`docker run -it hsm-util`
+`docker run -it registry.gitlab.com/bit55/public/hsm-util/hsm-util`
 
