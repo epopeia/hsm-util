@@ -6,7 +6,7 @@ stages:
   - docker-build
 
 maven-build:
-  image: maven:3.3.9-jdk-8
+  image: maven:3.6.1-jdk-8-alpine
   stage: maven-build
   script:
     - mvn clean
