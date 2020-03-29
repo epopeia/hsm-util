@@ -16,7 +16,7 @@ maven-build:
     paths:
       - target/*.jar
   cache:
-    key: "$CI_COMMIT_REF_NAME"
+    key: "$CI_COMMIT_REF_SLUG"
     policy: push
     paths:
       - target/*.jar
@@ -35,7 +35,7 @@ docker-build:
     - docker build --pull -t "$CI_REGISTRY_IMAGE/$IMAGE" .
     - docker push "$CI_REGISTRY_IMAGE/$IMAGE"
   cache:
-    key: "$CI_COMMIT_REF_NAME"
+    key: "$CI_COMMIT_REF_SLUG"
     policy: pull
   only:
     - master
